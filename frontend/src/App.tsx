@@ -1,26 +1,17 @@
 import { useState } from "react"
 import "./App.css"
+import { BrowserRouter, Route, Routes } from "react-router-dom"
+import Login from "./components/Login"
+import Register from "./components/Register"
 
 function App() {
-	const [username, setUsername] = useState("")
-	const [password, setPassword] = useState("")
-	const [email, setEmail] = useState("")
-
-	async function handleSubmit() {
-		const res = await fetch("/api/user/create", { method: "POST", body: JSON.stringify({ username, password, email }) })
-		if (res.ok) {
-			const data = await res.json()
-			console.log(data)
-		}
-	}
-
 	return (
-		<div>
-			<input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-			<input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-			<input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
-			<button onClick={handleSubmit}></button>
-		</div>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/Login" element={<Login />} />
+				<Route path="/Register" element={<Register />} />
+			</Routes>
+		</BrowserRouter>
 	)
 }
 
