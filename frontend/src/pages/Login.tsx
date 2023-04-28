@@ -1,0 +1,67 @@
+import { useState } from "react"
+import useToken from "../hooks/useToken"
+import { useNavigate } from "react-router-dom"
+import "../styles/Login.css"
+
+const Login: React.FC<defaultProps> = ({ setUser, user }) => {
+	const [username, setUsername] = useState("")
+	const [password, setPassword] = useState("")
+	const [info, setInfo] = useState<{
+		message: string
+		type: string
+	}>()
+	const { token, setToken } = useToken()
+	const navigate = useNavigate()
+
+	if (token || user.id !== "") navigate("/")
+
+	async function handleSubmit() {
+		if (username === "" || password === "")
+			return setInfo({
+				message: "Please fill in all fields",
+				type: "warning"
+			})
+
+		const res = await fetch("/api/user/login", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({
+				username,
+				password
+			})
+		})
+
+		const data = await res.json()
+		if (!res.ok) {
+			return setInfo({
+				message: `${data.error}`,
+				type: "error"
+			})
+		}
+
+		setUser(data.user)
+		setToken(data.token)
+		navigate("/")
+	}
+
+	return (
+		<div className="grid h-full">
+			<div className="login">
+				<input className="login-input" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+				<input className="login-input" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+				<button className="login-button" onClick={handleSubmit}>
+					Login
+				</button>
+				{info ? (
+					<div
+						className={`register-info`}
+						style={info.type === "warning" ? { border: "1px solid orange" } : info.type === "error" ? { border: "1px solid red" } : {}}
+					>
+						{info.message}
+					</div>
+				) : null}
+			</div>
+		</div>
+	)
+}
+export default Login

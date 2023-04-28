@@ -29,4 +29,13 @@
 
 .header-nav > a:hover {
 	color: #bb86fc;
+	cursor: pointer;
+}
+
+.header-username {
+	text-transform: capitalize;
+	font-size: large;
+	color: #ffffff;
+	border-right: 1px solid #ffffff;
+	padding-right: 2rem;
 }
