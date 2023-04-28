@@ -1,30 +1,26 @@
 import { useState } from "react"
-import reactLogo from "./assets/react.svg"
-import viteLogo from "/vite.svg"
 import "./App.css"
 
 function App() {
-	const [count, setCount] = useState(0)
+	const [username, setUsername] = useState("")
+	const [password, setPassword] = useState("")
+	const [email, setEmail] = useState("")
+
+	async function handleSubmit() {
+		const res = await fetch("/api/user/create", { method: "POST", body: JSON.stringify({ username, password, email }) })
+		if (res.ok) {
+			const data = await res.json()
+			console.log(data)
+		}
+	}
 
 	return (
-		<>
-			<div>
-				<a href="https://vitejs.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button onClick={() => setCount(count => count + 1)}>count is {count}</button>
-				<p>
-					Edit <code>src/App.tsx</code> sheesh
-				</p>
-			</div>
-			<p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-		</>
+		<div>
+			<input type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+			<input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
+			<input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
+			<button onClick={handleSubmit}></button>
+		</div>
 	)
 }
 
