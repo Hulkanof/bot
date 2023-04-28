@@ -1,16 +1,52 @@
 import "./styles/App.css"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Login from "./components/Login"
-import Register from "./components/Register"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
 import Header from "./components/Header"
+import Home from "./pages/Home"
+import { useEffect, useState } from "react"
+import useToken from "./hooks/useToken"
 
 function App() {
+	const [user, setUser] = useState<User>({
+		id: "",
+		name: "",
+		email: ""
+	})
+
+	const { token } = useToken()
+
+	useEffect(() => {
+		if (!token) return setUser({ id: "", name: "", email: "" })
+		if (user.id !== "") return
+		async function fetchUser() {
+			const res = await fetch("/api/user", {
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${token}`
+				}
+			})
+			if (res.ok) {
+				const data = await res.json()
+				console.log(data)
+				setUser({
+					id: data.user.id,
+					name: data.user.name,
+					email: data.user.email
+				})
+			}
+		}
+		fetchUser()
+	}, [token])
+
+	const props = { user, setUser }
 	return (
 		<BrowserRouter>
-			<Header />
+			<Header {...props} />
 			<Routes>
-				<Route path="/Login" element={<Login />} />
-				<Route path="/Register" element={<Register />} />
+				<Route path="/" element={<Home {...props} />} />
+				<Route path="/Login" element={<Login {...props} />} />
+				<Route path="/Register" element={<Register {...props} />} />
 			</Routes>
 		</BrowserRouter>
 	)
