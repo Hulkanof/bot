@@ -7,7 +7,11 @@ function App() {
 	const [email, setEmail] = useState("")
 
 	async function handleSubmit() {
-		console.log(username, password, email)
+		const res = await fetch("/api/user/create", { method: "POST", body: JSON.stringify({ username, password, email }) })
+		if (res.ok) {
+			const data = await res.json()
+			console.log(data)
+		}
 	}
 
 	return (
