@@ -29,7 +29,7 @@ const Register: React.FC<defaultProps> = ({ setUser, user }) => {
 				type: "warning"
 			})
 
-		const res = await fetch("/api/user/create", {
+		const res = await fetch("/api/v1/user/create", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({

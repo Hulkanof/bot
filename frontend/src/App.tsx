@@ -20,7 +20,7 @@ function App() {
 		if (!token) return setUser({ id: "", name: "", email: "" })
 		if (user.id !== "") return
 		async function fetchUser() {
-			const res = await fetch("/api/user", {
+			const res = await fetch("/api/v1/user", {
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${token}`

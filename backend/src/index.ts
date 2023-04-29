@@ -17,9 +17,9 @@ app.use(express.json())
 app.use(cookieParser())
 
 // Routes
-app.get("/api/user", user)
-app.post("/api/user/create", createUser)
-app.post("/api/user/login", loginUser)
+app.get("/api/v1/user", user)
+app.post("/api/v1/user/create", createUser)
+app.post("/api/v1/user/login", loginUser)
 
 // Start server
 app.listen(process.env.PORT || 4000, () => {
