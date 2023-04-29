@@ -28,7 +28,6 @@ function App() {
 			})
 			if (res.ok) {
 				const data = await res.json()
-				console.log(data)
 				setUser({
 					id: data.user.id,
 					name: data.user.name,

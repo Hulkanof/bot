@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import useToken from "../hooks/useToken"
 
@@ -7,7 +7,7 @@ const Home: React.FC<defaultProps> = props => {
 	const navigate = useNavigate()
 	const { token } = useToken()
 
-	if (!token && user.id === "") navigate("/login")
+	if (!token) navigate("/login")
 
 	return (
 		<div>

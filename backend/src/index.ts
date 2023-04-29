@@ -1,32 +1,45 @@
-import express from "express"
 import { PrismaClient } from "@prisma/client"
-import createUser from "./user/create"
-import cookieParser from "cookie-parser"
-import loginUser from "./user/login"
-import user from "./user"
+import ExpressClient from "./classes/ExpressClient"
+import { routes } from "./constants"
+import discordConfig from "./config/discord.json"
+import DiscordBot from "./classes/DiscordBot"
+import { exit } from "process"
+import type { DiscordClientConfig } from "./types/discord"
 require("dotenv").config()
 
 // Check for required environment variables
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set")
 if (!process.env.TOKEN_SECRET) throw new Error("TOKEN_SECRET not set")
-if (!process.env.PORT) console.log("PORT not set, using default 4000")
+if (!discordConfig.token || !discordConfig.clientId || !discordConfig.clientSecret) console.warn("Incorrect Discord config!")
+if (!process.env.PORT) console.warn("PORT not set, using default 4000")
 
 // Prisma client
-export const prisma = new PrismaClient({
-	errorFormat: "pretty"
+const prisma = new PrismaClient({ errorFormat: "pretty" })
+
+let discordBot: DiscordBot | undefined
+
+// Discord client
+if (discordConfig.token && discordConfig.clientId && discordConfig.clientSecret) {
+	const config = discordConfig as DiscordClientConfig
+	discordBot = new DiscordBot(config)
+}
+
+// Express client
+const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "4000"))
+
+// Graceful shutdown
+process.on("SIGTERM", async () => {
+	console.log("Gracefully shutting down!")
+	expressClient.close()
+	if (discordBot) discordBot.stop()
+	exit(0)
 })
 
-// Express app
-const app = express()
-app.use(express.json())
-app.use(cookieParser())
-
-// Routes
-app.get("/api/v1/user", user)
-app.post("/api/v1/user/create", createUser)
-app.post("/api/v1/user/login", loginUser)
-
-// Start server
-app.listen(process.env.PORT || 4000, () => {
-	console.log(`Server running on port ${process.env.PORT || 4000}`)
+process.on("SIGINT", async () => {
+	console.log("Gracefully shutting down!")
+	expressClient.close()
+	if (discordBot) discordBot.stop()
+	exit(0)
 })
+
+export { discordBot, expressClient, prisma }
