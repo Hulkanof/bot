@@ -6,6 +6,11 @@ import loginUser from "./user/login"
 import user from "./user"
 require("dotenv").config()
 
+// Check for required environment variables
+if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set")
+if (!process.env.TOKEN_SECRET) throw new Error("TOKEN_SECRET not set")
+if (!process.env.PORT) console.log("PORT not set, using default 4000")
+
 // Prisma client
 export const prisma = new PrismaClient({
 	errorFormat: "pretty"
