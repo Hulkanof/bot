@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { generateAccessToken, verifyAccessToken } from "../../utils/token"
 import { createHash } from "crypto"
 import { prisma } from "../.."
+import { JsonWebTokenError } from "jsonwebtoken"
 require("dotenv").config()
 
 /**
@@ -12,15 +13,14 @@ require("dotenv").config()
 export async function user(req: Request, res: Response) {
 	try {
 		if (!req.headers.authorization) return res.status(400).send({ error: "Not Authorized" })
-
 		const token = req.headers.authorization.split(" ")[1]
-
 		const user = verifyAccessToken(token)
 
 		res.status(200).send({ user })
 	} catch (error) {
-		console.error(error)
-		return res.status(500).send({ error: "Internal error!" })
+		if (error instanceof JsonWebTokenError) return res.status(400).send({ error: "Invalid token" })
+
+		return res.status(500).send({ error: "Internal Server Error" })
 	}
 }
 
@@ -38,15 +38,12 @@ export async function loginUser(req: Request, res: Response) {
 
 		const passhash = createHash("sha256").update(req.body.password).digest("hex")
 
-		const users = await prisma.user.findMany({
+		const user = await prisma.user.findUnique({
 			where: {
 				name: username
 			}
 		})
-
-		if (!users) return res.status(400).send({ error: "User not found" })
-
-		const user = users[0]
+		if (!user) return res.status(400).send({ error: "User not found" })
 
 		if (user.password !== passhash) return res.status(400).send({ error: "Incorrect password" })
 
@@ -54,8 +51,8 @@ export async function loginUser(req: Request, res: Response) {
 		const token = generateAccessToken(userWithoutPassword)
 		res.status(200).send({ user: userWithoutPassword, token })
 	} catch (error) {
-		console.error(error)
-		return res.status(500).send({ error: "Internal error!" })
+		console.log(error)
+		return res.status(500).send({ error: "Internal Server Error" })
 	}
 }
 
@@ -81,7 +78,8 @@ export async function createUser(req: Request, res: Response) {
 			select: {
 				id: true,
 				name: true,
-				email: true
+				email: true,
+				admin: true
 			}
 		})
 

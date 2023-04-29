@@ -13,7 +13,7 @@ export function generateAccessToken(user: User) {
 /**
  * Verifies a signed JWT token
  * @param token A signed JWT token
- * @returns The content of the token if it is valid and not expired
+ * @returns The content of the token if it is valid and not expired, throws jwt.JsonWebTokenError otherwise
  */
 export function verifyAccessToken(token: string): User {
 	if (!process.env.TOKEN_SECRET) throw new Error("No token secret")
