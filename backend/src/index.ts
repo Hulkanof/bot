@@ -16,9 +16,8 @@ if (!process.env.PORT) console.warn("PORT not set, using default 4000")
 // Prisma client
 const prisma = new PrismaClient({ errorFormat: "pretty" })
 
-let discordBot: DiscordBot | undefined
-
 // Discord client
+let discordBot: DiscordBot | undefined
 if (discordConfig.token && discordConfig.clientId && discordConfig.clientSecret) {
 	const config = discordConfig as DiscordClientConfig
 	discordBot = new DiscordBot(config)

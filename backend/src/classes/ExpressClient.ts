@@ -22,10 +22,6 @@ export default class ExpressClient {
 		})
 	}
 
-	public getApp() {
-		return this.app
-	}
-
 	public close() {
 		this.server.close()
 	}
