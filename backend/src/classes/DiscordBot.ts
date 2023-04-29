@@ -1,5 +1,5 @@
 import { Client, ClientOptions } from "discord.js"
-import { discordDefaultOptions } from "../constants"
+import { discordDefaultOptions } from "../utils/constants"
 import type { DiscordClientConfig } from "../types/discord"
 
 /**

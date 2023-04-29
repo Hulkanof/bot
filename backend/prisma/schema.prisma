@@ -13,6 +13,13 @@ datasource db {
 model User {
   id        String   @map("_id") @id @default(cuid())
   email     String   @unique
-  password  String   @map("password") 
-  name      String
+  name      String   @unique
+  password  String   
+  admin     Int   @default(0)
+}
+
+model Brains {
+  id      String   @map("_id") @id @default(cuid())
+  name      String  @unique
+  data      String
 }

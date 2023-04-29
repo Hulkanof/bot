@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client"
 import ExpressClient from "./classes/ExpressClient"
-import { routes } from "./constants"
+import { routes } from "./utils/constants"
 import discordConfig from "./config/discord.json"
 import DiscordBot from "./classes/DiscordBot"
 import { exit } from "process"
 import type { DiscordClientConfig } from "./types/discord"
+import ChatBot from "./classes/ChatBot"
 require("dotenv").config()
 
 const discordConfigOK = discordConfig.token && discordConfig.clientId && discordConfig.clientSecret
@@ -26,7 +27,7 @@ if (discordConfigOK) {
 }
 
 // Express Client
-const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "4000"))
+const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "4000"), true)
 
 // Graceful Shutdown
 process.on("SIGTERM", async () => {
