@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import "../styles/Register.css"
 import useToken from "../hooks/useToken"
 import { useNavigate } from "react-router-dom"
