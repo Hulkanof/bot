@@ -1,3 +1,6 @@
+/**
+ * Instance of a chat bot
+ */
 export default class ChatBot {
 	private name: string
 

@@ -4,6 +4,9 @@ import createUser from "./api/user/create"
 import loginUser from "./api/user/login"
 import type { Route } from "./types/express"
 
+/**
+ * Express routes
+ */
 export const routes: Route[] = [
 	{
 		method: "get",
@@ -22,6 +25,9 @@ export const routes: Route[] = [
 	}
 ]
 
+/**
+ * Default options for the Discord bot
+ */
 export const discordDefaultOptions = {
 	presence: {
 		status: "online"

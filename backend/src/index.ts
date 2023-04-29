@@ -15,20 +15,20 @@ if (!process.env.TOKEN_SECRET) throw new Error("TOKEN_SECRET not set")
 if (!discordConfigOK) console.warn("Incorrect Discord config!")
 if (!process.env.PORT) console.warn("PORT not set, using default 4000")
 
-// Prisma client
+// Prisma Client
 const prisma = new PrismaClient({ errorFormat: "pretty" })
 
-// Discord client
+// Discord Client
 let discordBot: DiscordBot | undefined
 if (discordConfigOK) {
 	const config = discordConfig as DiscordClientConfig
 	discordBot = new DiscordBot(config)
 }
 
-// Express client
+// Express Client
 const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "4000"))
 
-// Graceful shutdown
+// Graceful Shutdown
 process.on("SIGTERM", async () => {
 	console.log("Gracefully shutting down!")
 	expressClient.close()

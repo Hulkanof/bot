@@ -4,6 +4,11 @@ import { prisma } from "../../index"
 import { generateAccessToken } from "../../utils/token"
 require("dotenv").config()
 
+/**
+ * Route handler that creates an account and logs in the user: /api/v1/user/register
+ * @param req Request body must contain username, email and password
+ * @param res Response body will contain the user and a JWT token
+ */
 export default async function createUser(req: Request, res: Response) {
 	try {
 		if (!req.body) return res.status(400).send({ error: "No request body" })
