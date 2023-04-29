@@ -1,7 +1,5 @@
 import { GatewayIntentBits, Partials, ClientOptions } from "discord.js"
-import user from "./api/user"
-import createUser from "./api/user/create"
-import loginUser from "./api/user/login"
+import { user, createUser, loginUser } from "./api/user"
 import type { Route } from "./types/express"
 
 /**
