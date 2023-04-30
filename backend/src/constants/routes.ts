@@ -1,6 +1,5 @@
-import { ClientOptions, GatewayIntentBits, Partials } from "discord.js"
 import { getBot, getBots, createBot, deleteBot } from "../api/bots"
-import { getBrain, getBrains } from "../api/brain"
+import { createBrain, deleteBrain, getBrain, getBrains } from "../api/brain"
 import { createUser, loginUser, getUser } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
 import type { Route } from "../types/express"
@@ -87,22 +86,19 @@ export const routes: Route[] = [
 		path: "/api/v1/brains/:id",
 		middlewares: [verifyToken],
 		handler: getBrain
+	},
+	{
+		// Add a new brain
+		methods: ["post"],
+		path: "/api/v1/brains/create/:name",
+		middlewares: [verifyTokenAdmin],
+		handler: createBrain
+	},
+	{
+		// Delete a brain
+		methods: ["delete"],
+		path: "/api/v1/brains/delete/:id",
+		middlewares: [verifyTokenAdmin],
+		handler: deleteBrain
 	}
 ]
-
-/**
- * Default options for the Discord bot
- */
-export const discordDefaultOptions = {
-	presence: {
-		status: "online"
-	},
-	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
-	partials: [Partials.Message, Partials.Channel, Partials.GuildMember, Partials.User],
-	failIfNotExists: false,
-	allowedMentions: {
-		parse: ["roles", "users"],
-		repliedUser: false
-	},
-	shards: "auto"
-} as ClientOptions
