@@ -5,7 +5,6 @@ import discordConfig from "./config/discord.json"
 import DiscordBot from "./classes/DiscordBot"
 import { exit } from "process"
 import type { DiscordClientConfig } from "./types/discord"
-import ChatBot from "./classes/ChatBot"
 require("dotenv").config()
 
 const discordConfigOK = discordConfig.token && discordConfig.clientId && discordConfig.clientSecret

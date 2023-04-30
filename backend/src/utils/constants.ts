@@ -1,9 +1,11 @@
 import { ClientOptions, GatewayIntentBits, Partials } from "discord.js"
-import { bot, bots } from "../api/bots"
-import { brain, brains } from "../api/bots/bains"
-import { createUser, loginUser, user } from "../api/user"
+import { getBot, getBots, createBot, deleteBot } from "../api/bots"
+import { getBrain, getBrains } from "../api/brain"
+import { createUser, loginUser, getUser } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
 import type { Route } from "../types/express"
+import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
+import { getBotbrain, setBotBrain } from "../api/bots"
 
 /**
  * Express routes
@@ -12,51 +14,79 @@ export const routes: Route[] = [
 	// --------- user Routes ---------
 	{
 		// Get user data from JWT token
-		method: "get",
+		methods: ["get"],
 		path: "/api/v1/user",
-		handler: user
+		handler: getUser
 	},
 	{
 		// Create a new user account and return a JWT token
-		method: "post",
+		methods: ["post"],
 		path: "/api/v1/user/create",
 		handler: createUser
 	},
 	{
 		// Login to an existing user account and return a JWT token
-		method: "post",
+		methods: ["post"],
 		path: "/api/v1/user/login",
 		handler: loginUser
 	},
 	// --------- bot Routes ---------
 	{
 		// Get information about all bots
-		method: "get",
+		methods: ["get"],
 		path: "/api/v1/bots",
 		middlewares: [verifyToken],
-		handler: bots
+		handler: getBots
 	},
 	{
 		// Get information about a specific bot
-		method: "get",
+		methods: ["get"],
 		path: "/api/v1/bots/:id",
 		middlewares: [verifyToken],
-		handler: bot
+		handler: getBot
+	},
+	{
+		// Create a new bot
+		methods: ["post"],
+		path: "/api/v1/bots/create/:name",
+		middlewares: [verifyTokenAdmin],
+		handler: createBot
+	},
+	{
+		// delete a bot
+		methods: ["delete"],
+		path: "/api/v1/bots/delete/:id",
+		middlewares: [verifyTokenAdmin],
+		handler: deleteBot
+	},
+	{
+		// Get the brain of a bot
+		methods: ["get"],
+		path: "/api/v1/bots/:id/brain",
+		middlewares: [verifyToken],
+		handler: getBotbrain
+	},
+	{
+		// Change the brain of a bot
+		methods: ["put"],
+		path: "/api/v1/bots/:id/brain/:brain",
+		middlewares: [verifyTokenAdmin],
+		handler: setBotBrain
 	},
 	// --------- brain Routes ---------
 	{
-		// Get all brains
-		method: "get",
+		// Get all brains or a specific brain if bot id is provided
+		methods: ["get"],
 		path: "/api/v1/brains",
 		middlewares: [verifyToken],
-		handler: brains
+		handler: getBrains
 	},
 	{
-		// Get the brain of a specific bot
-		method: "get",
+		// Get a specific brain
+		methods: ["get"],
 		path: "/api/v1/brains/:id",
 		middlewares: [verifyToken],
-		handler: brain
+		handler: getBrain
 	}
 ]
 

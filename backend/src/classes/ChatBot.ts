@@ -89,6 +89,9 @@ export default class ChatBot {
 		this.expressClient.startWithServer(server)
 	}
 
+	/**
+	 * Returns The brain of the chat bot
+	 */
 	public async getBrain() {
 		try {
 			const brain = await prisma.brains.findUnique({
@@ -100,6 +103,7 @@ export default class ChatBot {
 			return brain
 		} catch (error) {
 			console.error(error)
+			throw new Error("Internal Server Error")
 		}
 	}
 
@@ -107,22 +111,20 @@ export default class ChatBot {
 	 * Sets the brain of the chat bot
 	 * @param name The name of the brain to set
 	 */
-	private async setBrain(name: string) {
-		try {
-			const file = await prisma.brains.findUnique({
-				where: {
-					name: name
-				}
-			})
-			if (!file) throw new Error("Brain not found")
-
-			if (this.rivescriptBot.stream(file.data, error => console.log(error))) {
-				this.brain = name
-				console.log("Brain set")
+	public async setBrain(name: string) {
+		const brain = await prisma.brains.findUnique({
+			where: {
+				name: name
 			}
-		} catch (error) {
-			console.error(error)
+		})
+		if (!brain) throw new Error("Brain not found")
+
+		if (!this.rivescriptBot.stream(brain.data, error => console.log(error))) {
+			throw new Error("Brain could not be set")
 		}
+		this.brain = name
+		console.log(`Brain of ${this.name} set to ${name}`)
+		return brain
 	}
 
 	/**
@@ -176,8 +178,16 @@ export default class ChatBot {
 	/**
 	 * Closes the server
 	 */
-	public close() {
+	public stop() {
 		this.wss.close()
 		this.expressClient.close()
+	}
+
+	/**
+	 * Deletes the chat bot
+	 */
+	public delete() {
+		this.stop()
+		ChatBot.chatBots = ChatBot.chatBots.filter(bot => bot.id !== this.id)
 	}
 }

@@ -10,7 +10,7 @@ require("dotenv").config()
  * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
  * @param res Response body will contain the user information
  */
-export async function user(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
 	try {
 		if (!req.headers.authorization) return res.status(400).send({ error: "Not Authorized" })
 		const token = req.headers.authorization.split(" ")[1]
