@@ -42,8 +42,11 @@ export default class ExpressClient {
 
 		// Add routes from routes array
 		routes.forEach(route => {
-			if (route.middlewares) this.app[route.method](route.path, route.middlewares, route.handler)
-			else this.app[route.method](route.path, route.handler)
+			for (let i = 0; i < route.methods.length; i++) {
+				const method = route.methods[i]
+				if (route.middlewares) this.app[method](route.path, route.middlewares, route.handler)
+				else this.app[method](route.path, route.handler)
+			}
 		})
 
 		ExpressClient.usedPorts.push(port)

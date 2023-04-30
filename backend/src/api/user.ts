@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
-import { generateAccessToken, verifyAccessToken } from "../../utils/token"
+import { generateAccessToken, verifyAccessToken } from "../utils/token"
 import { createHash } from "crypto"
-import { prisma } from "../.."
+import { prisma } from ".."
 import { JsonWebTokenError } from "jsonwebtoken"
 require("dotenv").config()
 
@@ -10,7 +10,7 @@ require("dotenv").config()
  * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
  * @param res Response body will contain the user information
  */
-export async function user(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
 	try {
 		if (!req.headers.authorization) return res.status(400).send({ error: "Not Authorized" })
 		const token = req.headers.authorization.split(" ")[1]
@@ -50,7 +50,7 @@ export async function loginUser(req: Request, res: Response) {
 		const { password: _, ...userWithoutPassword } = user
 		const token = generateAccessToken(userWithoutPassword)
 		res.status(200).send({ user: userWithoutPassword, token })
-	} catch (error) {
+	} catch (error: any) {
 		console.log(error)
 		return res.status(500).send({ error: "Internal Server Error" })
 	}
@@ -87,8 +87,9 @@ export async function createUser(req: Request, res: Response) {
 
 		const token = generateAccessToken(user)
 		res.status(200).send({ user: user, token })
-	} catch (error) {
+	} catch (error: any) {
 		console.error(error)
+		if (error.code === "P2002") return res.status(400).send({ error: "User already exists" })
 		return res.status(500).send({ error: "Internal error!" })
 	}
 }

@@ -15,11 +15,11 @@ model User {
   email     String   @unique
   name      String   @unique
   password  String   
-  admin     Int   @default(0)
+  admin     Int      @default(0)
 }
 
 model Brains {
-  id      String   @map("_id") @id @default(cuid())
+  id        String  @map("_id") @id @default(cuid())
   name      String  @unique
   data      String
 }

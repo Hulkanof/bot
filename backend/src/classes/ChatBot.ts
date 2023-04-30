@@ -1,9 +1,10 @@
-import { WebSocketServer } from "ws"
+import { WebSocketServer, Data } from "ws"
 import ExpressClient from "./ExpressClient"
 import { randomUUID } from "crypto"
 import RiveScript from "rivescript"
 import { prisma } from ".."
 import http from "http"
+import { SocketClient } from "../types/express"
 
 /**
  * Instance of a chat bot
@@ -39,7 +40,23 @@ export default class ChatBot {
 	 */
 	private rivescriptBot: RiveScript
 
+	/**
+	 * The name of the brain
+	 */
 	private brain!: string
+
+	/**
+	 * Array of all connected clients
+	 */
+	private socketClients: SocketClient[] = []
+
+	private static conversations: {
+		[username: string]: {
+			chatBotName: string
+			question: string
+			answer: string
+		}[]
+	}
 
 	/**
 	 * Creates an instance of ChatBot.
@@ -65,30 +82,81 @@ export default class ChatBot {
 	 * Starts the web chat client
 	 */
 	private startWebChatClient() {
-		let port = process.env.PORT ? Number(process.env.PORT) + 1 : 4001
-		while (ExpressClient.usedPorts.includes(port)) {
-			port++
-		}
+		const _this = this
 
+		// find a free port to use
+		let port = process.env.PORT ? Number(process.env.PORT) + 1 : 4001
+		while (ExpressClient.usedPorts.includes(port)) port++
+
+		// create the express client and the web socket server
 		this.expressClient = new ExpressClient([], port)
 		const server = http.createServer(this.expressClient.getApp())
 		this.wss = new WebSocketServer({ server })
 
+		// Listen for new connections and handle them
 		this.wss.on("connection", function connection(ws) {
-			ws.on("open", function open() {
-				console.log("connected")
-			})
-			ws.on("message", function incoming(data) {
-				console.log(data)
+			ws.send(`Connected to chatBot ${_this.name}, please give your name (/name <name>)`)
+			_this.socketClients.push({ ws })
+
+			ws.on("message", async function incoming(data) {
+				const index = _this.socketClients.findIndex(client => client.ws === ws)
+				if (index === -1) return ws.send("Internal Server Error")
+
+				if (!_this.socketClients[index].name && !data.toString().startsWith("/name ")) return ws.send("Please give your name (/name <name>)")
+
+				// if the user wants to set his name save it and return
+				if (data.toString().startsWith("/name ")) {
+					const name = data.toString().replace("/name ", "").trim()
+
+					_this.socketClients[index].name = name
+					ws.send(`Hi ${name}!`)
+
+					return console.log(`User ${name} connected to chatBot ${_this.name}`)
+				}
+
+				await _this.handleReceivedMessage(data, index)
 			})
 			ws.on("close", function close() {
-				console.log("disconnected")
+				const index = _this.socketClients.findIndex(client => client.ws === ws)
+				if (index === -1) return ws.send("Internal Server Error")
+
+				const name = _this.socketClients[index].name
+				console.log(`User ${name} disconnected from chatBot ${_this.name}`)
+				_this.socketClients.splice(index, 1)
 			})
 		})
 
+		// start the express client
 		this.expressClient.startWithServer(server)
 	}
 
+	private async handleReceivedMessage(data: Data, index: number) {
+		const client = this.socketClients[index]
+		if (!client.name) return client.ws.send("Please give your name (/name <name>)")
+		const username = client.name
+
+		console.log(`${this.name} received from ${username}: ${data}`)
+
+		// process the message with rivestcript and send the response back to the client
+		this.rivescriptBot.reply(username, data.toString()).then(reply => {
+			console.log(`${this.name} sent to ${username}: ${reply}`)
+			client.ws.send(reply)
+
+			if (!ChatBot.conversations) ChatBot.conversations = {}
+			if (!ChatBot.conversations[username]) ChatBot.conversations[username] = []
+			ChatBot.conversations[username].push({
+				chatBotName: this.name,
+				question: data.toString(),
+				answer: reply
+			})
+
+			console.log(ChatBot.conversations[username])
+		})
+	}
+
+	/**
+	 * Returns The brain of the chat bot
+	 */
 	public async getBrain() {
 		try {
 			const brain = await prisma.brains.findUnique({
@@ -100,6 +168,7 @@ export default class ChatBot {
 			return brain
 		} catch (error) {
 			console.error(error)
+			throw new Error("Internal Server Error")
 		}
 	}
 
@@ -107,22 +176,24 @@ export default class ChatBot {
 	 * Sets the brain of the chat bot
 	 * @param name The name of the brain to set
 	 */
-	private async setBrain(name: string) {
-		try {
-			const file = await prisma.brains.findUnique({
-				where: {
-					name: name
-				}
-			})
-			if (!file) throw new Error("Brain not found")
-
-			if (this.rivescriptBot.stream(file.data, error => console.log(error))) {
-				this.brain = name
-				console.log("Brain set")
+	public async setBrain(name: string) {
+		const brain = await prisma.brains.findUnique({
+			where: {
+				name: name
 			}
-		} catch (error) {
-			console.error(error)
+		})
+		if (!brain) throw new Error("Brain not found")
+
+		if (!this.rivescriptBot.stream(brain.data, error => console.log(error))) {
+			throw new Error("Brain could not be set")
 		}
+
+		// sort replies after loading
+		this.rivescriptBot.sortReplies()
+
+		this.brain = name
+		console.log(`Brain of ${this.name} set to ${name}`)
+		return brain
 	}
 
 	/**
@@ -176,8 +247,16 @@ export default class ChatBot {
 	/**
 	 * Closes the server
 	 */
-	public close() {
+	public stop() {
 		this.wss.close()
 		this.expressClient.close()
+	}
+
+	/**
+	 * Deletes the chat bot
+	 */
+	public delete() {
+		this.stop()
+		ChatBot.chatBots = ChatBot.chatBots.filter(bot => bot.id !== this.id)
 	}
 }

@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client"
 import ExpressClient from "./classes/ExpressClient"
-import { routes } from "./utils/constants"
 import discordConfig from "./config/discord.json"
 import DiscordBot from "./classes/DiscordBot"
 import { exit } from "process"
 import type { DiscordClientConfig } from "./types/discord"
-import ChatBot from "./classes/ChatBot"
+import initDB from "./utils/initDB"
+import { routes } from "./constants/routes"
 require("dotenv").config()
 
 const discordConfigOK = discordConfig.token && discordConfig.clientId && discordConfig.clientSecret
@@ -18,6 +18,7 @@ if (!process.env.PORT) console.warn("PORT not set, using default 4000")
 
 // Prisma Client
 const prisma = new PrismaClient({ errorFormat: "pretty" })
+initDB()
 
 // Discord Client
 let discordBot: DiscordBot | undefined
