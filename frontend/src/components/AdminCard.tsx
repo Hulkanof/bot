@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import updateAdmin from "../functions/user/updateAdmin";
 import useUsers from "../hooks/useUsers";
+import "../styles/AdminCard.css";
 import { queryClient } from "../main";
 
 const AdminCard: React.FC<defaultPageProps> = ({token}) => {
@@ -26,9 +27,10 @@ const AdminCard: React.FC<defaultPageProps> = ({token}) => {
 
     return (
         <div className="admin-card">
-            <div className="admin-card-title">Admin</div>
+            <div className="admin-card-title"></div>
             <div className="admin-card-search">
-                <input type="text" placeholder="Search..." onChange={(e) => setSearch(e.target.value)}/>
+                Search : 
+                <input type="text" placeholder="Search..." onChange={(e) => setSearch(e.target.value)} className="search"/>
             </div>
             <div className="admin-card-users">
                 {filterData.map((user, index) => (

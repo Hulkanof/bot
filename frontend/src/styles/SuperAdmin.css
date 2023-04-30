@@ -1,0 +1,25 @@
+body {
+	width: 100%;
+	display: flex;
+	background-color: #121212;
+	color: "#ffffff";
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	z-index: 2;
+}
+
+.manage{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    border: 1px solid;
+    border-color: #ffffff;
+    padding: 2rem;
+    border-radius: 1rem;
+}
+
+.manage-title{
+    font-size: 1.5rem;
+}

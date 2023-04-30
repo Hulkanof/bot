@@ -1,5 +1,6 @@
 import React from "react"
 import AdminCard from "../components/AdminCard"
+import "../styles/SuperAdmin.css"
 
 const SuperAdmin: React.FC<defaultPageProps> = props => {
     const {user, token} = props
@@ -9,7 +10,10 @@ const SuperAdmin: React.FC<defaultPageProps> = props => {
         return (
         <div>
             <h1>Welcome to the Super Admin panel</h1>
-            <div>
+            <div className="manage">
+                <div className="manage-title">
+                    Manage current administators : 
+                </div>
                 <AdminCard {...props}/>
             </div>
         </div>

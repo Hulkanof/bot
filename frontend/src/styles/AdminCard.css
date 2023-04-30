@@ -1,0 +1,41 @@
+body {
+	width: 100%;
+	display: grid;
+	background-color: #121212;
+	color: "#ffffff";
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	z-index: 2;
+}
+
+
+.admin-card{
+    width: 100%;
+    height: 100%;
+    display: flex;
+	flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.admin-card-search{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+}
+
+.admin-card-user{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+}
+
+.search{
+	gap: 2rem;
+	font-display: flex;
+	color: black;
+}
