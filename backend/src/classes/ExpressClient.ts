@@ -101,6 +101,10 @@ export default class ExpressClient {
 	 * Closes the server
 	 */
 	public close() {
-		if (this.server) this.server.close()
+		if (this.server) {
+			this.server.close(() => {
+				console.log(`Server on port ${this.port} closed`)
+			})
+		}
 	}
 }

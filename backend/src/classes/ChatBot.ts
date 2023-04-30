@@ -111,7 +111,7 @@ export default class ChatBot {
 					_this.socketClients[index].name = name
 					ws.send(`Hi ${name}!`)
 
-					return console.log(`User ${name} connected to chatBot ${_this.name}`)
+					return console.log(`++ User ${name} connected to chatBot ${_this.name}`)
 				}
 
 				await _this.handleReceivedMessage(data, index)
@@ -121,7 +121,7 @@ export default class ChatBot {
 				if (index === -1) return ws.send("Internal Server Error")
 
 				const name = _this.socketClients[index].name
-				console.log(`User ${name} disconnected from chatBot ${_this.name}`)
+				console.log(`-- User ${name} disconnected from chatBot ${_this.name}`)
 				_this.socketClients.splice(index, 1)
 			})
 		})
@@ -135,11 +135,11 @@ export default class ChatBot {
 		if (!client.name) return client.ws.send("Please give your name (/name <name>)")
 		const username = client.name
 
-		console.log(`${this.name} received from ${username}: ${data}`)
+		console.log(`++ ${this.name} received from ${username}: ${data}`)
 
 		// process the message with rivestcript and send the response back to the client
 		this.rivescriptBot.reply(username, data.toString()).then(reply => {
-			console.log(`${this.name} sent to ${username}: ${reply}`)
+			console.log(`-- ${this.name} sent to ${username}: ${reply}`)
 			client.ws.send(reply)
 
 			if (!ChatBot.conversations) ChatBot.conversations = {}
@@ -149,8 +149,6 @@ export default class ChatBot {
 				question: data.toString(),
 				answer: reply
 			})
-
-			console.log(ChatBot.conversations[username])
 		})
 	}
 
@@ -248,8 +246,9 @@ export default class ChatBot {
 	 * Closes the server
 	 */
 	public stop() {
-		this.wss.close()
+		this.wss.close(error => console.error(error))
 		this.expressClient.close()
+		for (const client of this.wss.clients) client.terminate()
 	}
 
 	/**
