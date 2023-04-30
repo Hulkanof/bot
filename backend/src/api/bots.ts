@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import ChatBot from "../../classes/ChatBot"
+import ChatBot from "../classes/ChatBot"
 
 /**
  * Route handler to get the information about the bots: /api/v1/bots

@@ -1,5 +1,5 @@
-import { prisma } from "../.."
-import ChatBot from "../../classes/ChatBot"
+import { prisma } from ".."
+import ChatBot from "../classes/ChatBot"
 import { Request, Response } from "express"
 
 /**

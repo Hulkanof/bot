@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
-import { generateAccessToken, verifyAccessToken } from "../../utils/token"
+import { generateAccessToken, verifyAccessToken } from "../utils/token"
 import { createHash } from "crypto"
-import { prisma } from "../.."
+import { prisma } from ".."
 import { JsonWebTokenError } from "jsonwebtoken"
 require("dotenv").config()
 
