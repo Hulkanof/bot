@@ -1,20 +1,20 @@
 import React from "react"
+import AdminCard from "../components/AdminCard"
 
 const SuperAdmin: React.FC<defaultPageProps> = props => {
     const {user, token} = props
 
-    return (
+    if (user.admin < 2) return <div>Not authorized</div>
+    else{
+        return (
         <div>
-            <h1>Welcome!</h1>
+            <h1>Welcome to the Super Admin panel</h1>
             <div>
-                <h2>User</h2>
-                <p>ID: {user.id}</p>
-                <p>Name: {user.name}</p>
-                <p>Email: {user.email}</p>
-                <p>Admin: {user.admin}</p>
+                <AdminCard {...props}/>
             </div>
         </div>
     )
+    }
 }
 
 export default SuperAdmin

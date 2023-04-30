@@ -1,0 +1,51 @@
+import React, {useState} from "react";
+import updateAdmin from "../functions/user/updateAdmin";
+import useUsers from "../hooks/useUsers";
+import { queryClient } from "../main";
+
+const AdminCard: React.FC<defaultPageProps> = ({token}) => {
+
+    const {data, isLoading, error} = useUsers();
+    const [search, setSearch] = useState("");
+
+
+    if (error) return <div>Error: {error.message}</div>;
+    if (isLoading) return <div>Loading...</div>;
+    if (!data) return <div>Users fetch failed</div>;
+
+    const filterData = data.filter((user) => user.name.toLowerCase().includes(search.toLowerCase()) && user.admin > 0);
+    
+    function handleRemove(id: string){
+        updateAdmin(token, id, 0).catch((err) => console.log(err));
+        if (!data) return;
+        const newData = data.filter((user) => user.id !== id);
+        queryClient.setQueriesData(["users"], (oldData: any) =>{
+        return newData;
+        });
+    }
+
+    return (
+        <div className="admin-card">
+            <div className="admin-card-title">Admin</div>
+            <div className="admin-card-search">
+                <input type="text" placeholder="Search..." onChange={(e) => setSearch(e.target.value)}/>
+            </div>
+            <div className="admin-card-users">
+                {filterData.map((user, index) => (
+                    <div className="admin-card-user" key={index}>
+                        <div className="admin-card-user-name">{user.name}</div>
+                        <div className="admin-card-user-email">{user.email}</div>
+                        {user.admin === 1 ? (
+                            <div className="admin-card-user-remove" onClick={() => handleRemove(user.id)}>Remove</div>
+                        ) : (
+                            <div className="admin-card-user-remove" ></div>
+                        )}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+export default AdminCard;
+
