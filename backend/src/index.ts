@@ -34,14 +34,14 @@ const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "40
 process.on("SIGTERM", async () => {
 	console.log("Gracefully shutting down!")
 	expressClient.close()
-	if (discordBot) discordBot.stop()
+	if (discordBot) await discordBot.stop()
 	exit(0)
 })
 
 process.on("SIGINT", async () => {
 	console.log("Gracefully shutting down!")
 	expressClient.close()
-	if (discordBot) discordBot.stop()
+	if (discordBot) await discordBot.stop()
 	exit(0)
 })
 
