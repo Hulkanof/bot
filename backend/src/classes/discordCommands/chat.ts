@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, Message, PermissionFlagsBits, GuildChannelTypes, ChannelType } from "discord.js"
+import { Colors, EmbedBuilder, Message, PermissionFlagsBits, ChannelType } from "discord.js"
 import { ICommand } from "../../types/discord"
 import DiscordBot from "../DiscordBot"
 import ChatBot from "../ChatBot"
@@ -15,7 +15,7 @@ export default function chat(client: DiscordBot): ICommand {
 				return
 			}
 
-			const bots = ChatBot.chatBots
+			const bots = ChatBot.chatBots.filter(bot => bot.serviceAccess["discord"] === true)
 			if (!bots) {
 				message.reply("No bots found")
 				return

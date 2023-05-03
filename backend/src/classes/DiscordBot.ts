@@ -1,11 +1,10 @@
-import { Client, ClientOptions, Message } from "discord.js"
+import { Client, Message } from "discord.js"
 import { discordDefaultOptions } from "../constants/discordDefaultOptions"
 import type { DiscordClientConfig, IChat, ICommand } from "../types/discord"
 import help from "./discordCommands/help"
 import chat from "./discordCommands/chat"
 import stop from "./discordCommands/stop"
-import ChatBot from "./ChatBot"
-import { changeChatBot, handlePrivateChat } from "../utils/discord/utils"
+import { handlePrivateChat } from "../utils/discord/utils"
 
 /**
  * Discord Bot Client
@@ -23,23 +22,28 @@ export default class DiscordBot extends Client {
 
 	/**
 	 * Map of commands
+	 *
+	 * Key: Command name
+	 *
+	 * Value: Command
 	 */
 	private commands: Map<string, ICommand>
 
 	/**
 	 * Map of chats
+	 *
 	 * Key: User ID
-	 * Value: Array of channel IDs
+	 *
+	 * Value: Array of chats
 	 */
 	public chats = new Map<string, IChat[]>()
 
 	/**
 	 * Creates an instance of DiscordBot.
 	 * @param config Config for the bot
-	 * @param options Options for the bot
 	 */
-	constructor(config: DiscordClientConfig, options: ClientOptions = discordDefaultOptions) {
-		super(options)
+	constructor(config: DiscordClientConfig) {
+		super(discordDefaultOptions)
 		this.config = config
 		this.commands = new Map()
 		this.chats = new Map()

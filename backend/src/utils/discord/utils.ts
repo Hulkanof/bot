@@ -19,27 +19,31 @@ export async function handlePrivateChat(chats: Map<string, IChat[]>, message: Me
 		return
 	}
 
+	const name = chat.chatBot.getName()
+
 	chat.chatBot
 		.getRivescriptBot()
 		.reply(message.author.username, message.content)
 		.then(reply => {
 			message.reply(reply)
+			if (!ChatBot.conversations) ChatBot.conversations = {}
+			if (!ChatBot.conversations[message.author.username]) ChatBot.conversations[message.author.username] = []
+			ChatBot.conversations[message.author.username].push({
+				chatBotName: name,
+				question: message.content,
+				answer: reply
+			})
 		})
 }
 
 export function changeChatBot(message: Message, chat: IChat) {
 	const botName = message.content.slice("!bot".length).trim()
-	if (botName === "") {
-		message.reply("No bot name provided")
-		return
-	}
+	if (botName === "") return message.reply("No bot name provided")
 
 	const chatBot = ChatBot.chatBots.find(bot => bot.getName() === botName)
-	if (!chatBot) {
-		message.reply("Bot not found")
-		return
-	}
+	if (!chatBot) return message.reply("Bot not found")
 
+	if (chatBot.serviceAccess["discord"] === false) return message.reply("This bot is not available on Discord")
 	chat.chatBot = chatBot
 	message.reply(`Changed bot to ${botName}`)
 }

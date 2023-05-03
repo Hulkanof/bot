@@ -1,4 +1,4 @@
-import { prisma } from ".."
+import { prisma } from "../main"
 import defaultBrain from "../constants/defaultBrain"
 
 export default async function initDB() {
