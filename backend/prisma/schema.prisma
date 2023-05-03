@@ -23,3 +23,16 @@ model Brains {
   name      String  @unique
   data      String
 }
+
+model Bots {
+  id        String  @map("_id") @id @default(cuid())
+  name      String  @unique
+  brain     String
+  serviceAccess ServiceAccess 
+}
+
+type ServiceAccess {
+  discord   Boolean
+  mastodon  Boolean
+  slack     Boolean
+}

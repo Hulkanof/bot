@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 import { verifyAccessToken } from "../utils/token"
 import { JsonWebTokenError } from "jsonwebtoken"
-import { prisma } from ".."
+import { prisma } from "../main"
 
 export async function verifyTokenAdmin(req: Request, res: Response, next: NextFunction) {
 	try {
