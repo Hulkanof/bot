@@ -2,9 +2,12 @@ import { WebSocketServer, Data } from "ws"
 import ExpressClient from "./ExpressClient"
 import { randomUUID } from "crypto"
 import RiveScript from "rivescript"
-import { prisma } from ".."
+import { prisma } from "../main"
 import http from "http"
 import { SocketClient } from "../types/express"
+import { ServiceAccess } from "@prisma/client"
+import { environment } from '../main'
+
 
 /**
  * Instance of a chat bot
@@ -50,7 +53,10 @@ export default class ChatBot {
 	 */
 	private socketClients: SocketClient[] = []
 
-	private static conversations: {
+	/**
+	 * list of conversations with the chat bot
+	 */
+	public static conversations: {
 		[username: string]: {
 			chatBotName: string
 			question: string
@@ -59,18 +65,21 @@ export default class ChatBot {
 	}
 
 	/**
+	 * The service access of the chat bot
+	 */
+	public serviceAccess: ServiceAccess
+
+	/**
 	 * Creates an instance of ChatBot.
 	 * @param name The name of the chat bot
 	 */
-	constructor(name: string) {
+	constructor(id: string, name: string, brain: string, serviceAccess: ServiceAccess) {
+		this.id = id
 		this.name = name
-		this.id = randomUUID()
-		while (ChatBot.chatBots.some(bot => bot.id === this.id)) {
-			this.id = randomUUID()
-		}
+		this.serviceAccess = serviceAccess
 
 		this.rivescriptBot = new RiveScript({ utf8: true })
-		this.setBrain("standard.rive")
+		this.setBrain(brain)
 		this.rivescriptBot.unicodePunctuation = new RegExp(/[.,!?;:]/g)
 
 		this.startWebChatClient()
@@ -85,8 +94,8 @@ export default class ChatBot {
 		const _this = this
 
 		// find a free port to use
-		let port = process.env.PORT ? Number(process.env.PORT) + 1 : 4001
-		while (ExpressClient.usedPorts.includes(port)) port++
+		let port = Number(environment.PORT) + 1
+        while (ExpressClient.usedPorts.includes(port)) port++
 
 		// create the express client and the web socket server
 		this.expressClient = new ExpressClient([], port)
@@ -111,7 +120,7 @@ export default class ChatBot {
 					_this.socketClients[index].name = name
 					ws.send(`Hi ${name}!`)
 
-					return console.log(`User ${name} connected to chatBot ${_this.name}`)
+					return console.log(`++ User ${name} connected to chatBot ${_this.name}`)
 				}
 
 				await _this.handleReceivedMessage(data, index)
@@ -121,7 +130,7 @@ export default class ChatBot {
 				if (index === -1) return ws.send("Internal Server Error")
 
 				const name = _this.socketClients[index].name
-				console.log(`User ${name} disconnected from chatBot ${_this.name}`)
+				console.log(`-- User ${name} disconnected from chatBot ${_this.name}`)
 				_this.socketClients.splice(index, 1)
 			})
 		})
@@ -135,11 +144,11 @@ export default class ChatBot {
 		if (!client.name) return client.ws.send("Please give your name (/name <name>)")
 		const username = client.name
 
-		console.log(`${this.name} received from ${username}: ${data}`)
+		console.log(`++ ${this.name} received from ${username}: ${data}`)
 
 		// process the message with rivestcript and send the response back to the client
 		this.rivescriptBot.reply(username, data.toString()).then(reply => {
-			console.log(`${this.name} sent to ${username}: ${reply}`)
+			console.log(`-- ${this.name} sent to ${username}: ${reply}`)
 			client.ws.send(reply)
 
 			if (!ChatBot.conversations) ChatBot.conversations = {}
@@ -149,8 +158,6 @@ export default class ChatBot {
 				question: data.toString(),
 				answer: reply
 			})
-
-			console.log(ChatBot.conversations[username])
 		})
 	}
 
@@ -159,6 +166,7 @@ export default class ChatBot {
 	 */
 	public async getBrain() {
 		try {
+			if (!this.brain) throw new Error("Brain not set")
 			const brain = await prisma.brains.findUnique({
 				where: {
 					name: this.brain
@@ -248,8 +256,9 @@ export default class ChatBot {
 	 * Closes the server
 	 */
 	public stop() {
-		this.wss.close()
+		this.wss.close(error => console.error(error))
 		this.expressClient.close()
+		for (const client of this.wss.clients) client.terminate()
 	}
 
 	/**
