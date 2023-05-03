@@ -1,5 +1,8 @@
 import { Request, Response } from "express"
 import ChatBot from "../classes/ChatBot"
+import { prisma } from "../main"
+import { ServiceAccess } from '@prisma/client'
+
 
 /**
  * Route handler to get the information about the bots: /api/v1/bots
@@ -8,15 +11,23 @@ import ChatBot from "../classes/ChatBot"
  */
 export async function getBots(_req: Request, res: Response) {
 	try {
-		const chatBotNames = ChatBot.chatBots.map(bot => {
-			return {
-				id: bot.getId(),
-				name: bot.getName(),
-				port: bot.getPort()
-			}
-		})
+		const chatBots = await Promise.all(
+			ChatBot.chatBots.map(async bot => {
+				const brain = await bot.getBrain()
+				return {
+					id: bot.getId(),
+					name: bot.getName(),
+					brain: {
+						id: brain.id,
+						name: brain.name
+					},
+					serviceAccess: bot.serviceAccess,
+					socketPort: bot.getPort()
+				}
+			})
+		)
 
-		return res.status(200).send(chatBotNames)
+		return res.status(200).send(chatBots)
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
 	}
@@ -33,10 +44,17 @@ export async function getBot(req: Request, res: Response) {
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
 		if (!bot) return res.status(404).send({ error: "Bot not found" })
 
+		const brain = await bot.getBrain()
+
 		return res.status(200).send({
 			id: bot.getId(),
 			name: bot.getName(),
-			port: bot.getPort()
+			brain: {
+				id: brain.id,
+				name: brain.name
+			},
+			serviceAccess: bot.serviceAccess,
+			socketPort: bot.getPort()
 		})
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
@@ -53,11 +71,27 @@ export async function createBot(req: Request, res: Response) {
 		const botName = req.params.name
 		if (ChatBot.chatBots.some(bot => bot.getName() === botName)) return res.status(409).send({ error: "Bot already exists" })
 
-		const bot = new ChatBot(botName)
+		const serviceAccess = {
+			discord: false,
+			mastodon: false,
+			slack: false
+		}
+
+		const dbBot = await prisma.bots.create({
+			data: {
+				name: botName,
+				brain: "standard.rive",
+				serviceAccess
+			}
+		})
+
+		const bot = new ChatBot(dbBot.id, dbBot.name, dbBot.brain, dbBot.serviceAccess)
+
 		return res.status(200).send({
 			id: bot.getId(),
 			name: bot.getName(),
-			port: bot.getPort()
+			serviceAccess: bot.serviceAccess,
+			socketPort: bot.getPort()
 		})
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
@@ -76,6 +110,13 @@ export async function deleteBot(req: Request, res: Response) {
 		if (!bot) return res.status(404).send({ error: "Bot not found" })
 
 		bot.delete()
+
+		await prisma.bots.delete({
+			where: {
+				id: botId
+			}
+		})
+
 		return res.status(200).send({ message: "Bot deleted" })
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
@@ -93,7 +134,9 @@ export async function getBotbrain(req: Request, res: Response) {
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
 		if (!bot) return res.status(404).send({ error: "Bot not found" })
 
-		return res.status(200).send(bot.getBrain())
+		const brain = await bot.getBrain()
+
+		return res.status(200).send(brain)
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
 	}
@@ -112,6 +155,16 @@ export async function setBotBrain(req: Request, res: Response) {
 
 		const brainName = req.params.brain
 		const brain = await bot.setBrain(brainName)
+
+		await prisma.bots.update({
+			where: {
+				id: botId
+			},
+			data: {
+				brain: brainName
+			}
+		})
+
 		return res.status(200).send({
 			botId: bot.getId(),
 			brain,
@@ -120,4 +173,57 @@ export async function setBotBrain(req: Request, res: Response) {
 	} catch (error) {
 		return res.status(500).send({ error: "Internal Server Error" })
 	}
+}
+
+/**
+ * Route handler to get the service access of a bot: /api/v1/bots/:id/services
+ * @param req Request must contain a valid JWT token in the Authorization heaer with the Bearer scheme
+ * @param res Response body will contain the service access of the bot
+ */
+export async function getBotServices(req: Request, res: Response) {
+    const botId = req.params.id
+    const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+    if (!bot) return res.status(404).send({ error: "Bot not found" })
+
+    res.status(200).send(bot.serviceAccess)
+}
+
+/**
+ * Route handle to set the service access of a bot: /api/v1/bot/:id/services
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the new access for the bot
+ */
+export async function setBotServices(req: Request, res: Response) {
+    try {
+    const botId = req.params.id
+    const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+    if (!bot) return res.status(404).send({ error: "Bot not found" })
+
+    const services = req.body?.services as Partial<ServiceAccess>
+    if (!services) return res.status(400).send({ error: "Body was not correctly" })
+
+    const serviceAccess = {
+        discord: services.discord ? services.discord : bot.serviceAccess.discord,
+        mastodon: services.mastodon ? services.mastodon : bot.serviceAccess.mastodon,
+        slack: services.slack ? services.slack : bot.serviceAccess.slack
+    }
+
+    const dbServiceAccess = await prisma.bots.update({
+        where: {
+            id: botId
+        },
+        data: {
+            serviceAccess
+        }
+    })
+
+    if (!dbServiceAccess) return res.status(500).send({ error: "Data could not be set in the database" })
+
+    bot.serviceAccess = dbServiceAccess.serviceAccess
+
+    res.status(200).send(bot.serviceAccess)
+    } catch (error) {
+        console.error(error)
+        return res.status(500).send({ error: "internal Error" })
+    }
 }

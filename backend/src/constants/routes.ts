@@ -1,10 +1,12 @@
 import { getBot, getBots, createBot, deleteBot } from "../api/bots"
-import { createBrain, deleteBrain, getBrain, getBrains } from "../api/brain"
+import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
 import { createUser, loginUser, getUser } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
 import type { Route } from "../types/express"
 import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
 import { getBotbrain, setBotBrain } from "../api/bots"
+import { getBotServices, setBotServices } from "../api/bots"
+import { getServices } from "../api/services"
 
 /**
  * Express routes
@@ -72,6 +74,20 @@ export const routes: Route[] = [
 		middlewares: [verifyTokenAdmin],
 		handler: setBotBrain
 	},
+    {
+        // Get the service access for a bot
+        methods: ["get"],
+        path: "/api/v1/bots/:id/services",
+        middlewares: [verifyToken],
+        handler: getBotServices
+    },
+    {
+        // Set the service access of a bot
+        methods: ["put"],
+        path: "/api/v1/bots/:id/services",
+        middlewares: [verifyTokenAdmin],
+        handler: setBotServices
+    },
 	// --------- brain Routes ---------
 	{
 		// Get all brains or a specific brain if bot id is provided
@@ -100,5 +116,20 @@ export const routes: Route[] = [
 		path: "/api/v1/brains/delete/:id",
 		middlewares: [verifyTokenAdmin],
 		handler: deleteBrain
-	}
+	},
+	{
+		// Modify a brain
+		methods: ["put"],
+		path: "/api/v1/brains/modify/:id",
+		middlewares: [verifyTokenAdmin],
+		handler: modifyBrain
+	},
+    // --------- services Routes ---------
+    {
+        // Object of services with boolean values, true if the configuration is ok
+        methods: ["get"],
+        path: "/api/v1/services",
+        middlewares: [verifyToken],
+        handler: getServices
+    }
 ]
