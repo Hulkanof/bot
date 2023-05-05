@@ -26,18 +26,6 @@ _date limite: 29/05/2023 20h00_
 
 _[best practices OPENPAI](https://oai.github.io/Documentation/best-practices.html) | [best practices 2](https://www.pythoniste.fr/python/fastapi/les-bonnes-pratiques-pour-construire-un-api-rest/) | [best practices 3](https://teknospire.com/best-practices-to-open-api-design/)_
 
-- GET /v1/bots : liste des bots
-- GET /v1/bots/{id} : info sur un bot
-- GET /v1/bots/{id}/brain : cerveau d'un bot
-
-- POST /v1/bots : creer un bot avec un cerveau standart
-
-- PUT /v1/bots/{id}/services : ajouter un service a un bot
-- PUT /v1/bots/{id}/brain : changer le cerveau d'un bot
-
-- DELETE /v1/bots/{id} : supprimer un bot
-- DELETE /v1/bots/{id}/services : supprimer un service d'un bot
-
 ## Interface Web
 
 - Login pour acceder a l'interface
