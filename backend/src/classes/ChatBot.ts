@@ -102,9 +102,12 @@ export default class ChatBot {
 		this.wss = new WebSocketServer({ server })
 
 		// Listen for new connections and handle them
-		this.wss.on("connection", function connection(ws) {
-			ws.send(`Connected to chatBot ${_this.name}, please give your name (/name <name>)`)
-			_this.socketClients.push({ ws })
+		this.wss.on("connection", function connection(ws, req) {
+			const urlParams = new URLSearchParams(req.url?.replace("/?", ""))
+			const name = urlParams.get("name")
+			if (!name) return ws.send("Please give your name (/name <name>)")
+			ws.send(`Connected to chatBot ${_this.name} as ${name}`)
+			_this.socketClients.push({ ws, name })
 
 			ws.on("message", async function incoming(data) {
 				const index = _this.socketClients.findIndex(client => client.ws === ws)

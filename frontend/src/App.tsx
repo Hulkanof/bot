@@ -6,6 +6,7 @@ import Header from "./components/Header"
 import Home from "./pages/Home"
 import { useEffect, useState } from "react"
 import useToken from "./hooks/useToken"
+import WebSocketInterface from "./pages/WebSocketInterface"
 
 function App() {
 	const [user, setUser] = useState<User>({
@@ -44,8 +45,10 @@ function App() {
 			<Header {...props} />
 			<Routes>
 				<Route path="/" element={<Home {...props} />} />
-				<Route path="/Login" element={<Login {...props} />} />
-				<Route path="/Register" element={<Register {...props} />} />
+				<Route path="/login" element={<Login {...props} />} />
+				<Route path="/register" element={<Register {...props} />} />
+				<Route path="/web-client" element={<WebSocketInterface {...props} socketport={4001} />} />
+				<Route path="*" element={<h1>404</h1>} />
 			</Routes>
 		</BrowserRouter>
 	)
