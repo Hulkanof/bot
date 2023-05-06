@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken"
-import { environment } from '../main'
-
+import { environment } from "../main"
 
 /**
  * Creates a signed JWT token
@@ -8,7 +7,7 @@ import { environment } from '../main'
  * @returns A signed JWT token
  */
 export function generateAccessToken(user: User) {
-	return jwt.sign(user, environment.JWT_TOKEN, { expiresIn: "32d" })
+	return jwt.sign(user, environment.JWT_SECRET, { expiresIn: "32d" })
 }
 
 /**
@@ -17,5 +16,5 @@ export function generateAccessToken(user: User) {
  * @returns The content of the token if it is valid and not expired, throws jwt.JsonWebTokenError otherwise
  */
 export function verifyAccessToken(token: string): User {
-	return jwt.verify(token, environment.JWT_TOKEN) as User
+	return jwt.verify(token, environment.JWT_SECRET) as User
 }

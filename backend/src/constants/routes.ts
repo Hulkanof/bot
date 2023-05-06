@@ -12,7 +12,7 @@ import { getServices } from "../api/services"
  * Express routes
  */
 export const routes: Route[] = [
-	// --------- user Routes ---------
+	// ------------------ user Routes ------------------
 	{
 		// Get user data from JWT token
 		methods: ["get"],
@@ -31,7 +31,7 @@ export const routes: Route[] = [
 		path: "/api/v1/user/login",
 		handler: loginUser
 	},
-	// --------- bot Routes ---------
+	// ------------------ bot Routes ------------------
 	{
 		// Get information about all bots
 		methods: ["get"],
@@ -74,23 +74,23 @@ export const routes: Route[] = [
 		middlewares: [verifyTokenAdmin],
 		handler: setBotBrain
 	},
-    {
-        // Get the service access for a bot
-        methods: ["get"],
-        path: "/api/v1/bots/:id/services",
-        middlewares: [verifyToken],
-        handler: getBotServices
-    },
-    {
-        // Set the service access of a bot
-        methods: ["put"],
-        path: "/api/v1/bots/:id/services",
-        middlewares: [verifyTokenAdmin],
-        handler: setBotServices
-    },
-	// --------- brain Routes ---------
 	{
-		// Get all brains or a specific brain if bot id is provided
+		// Get the service access for a bot
+		methods: ["get"],
+		path: "/api/v1/bots/:id/services",
+		middlewares: [verifyToken],
+		handler: getBotServices
+	},
+	{
+		// Set the service access of a bot
+		methods: ["put"],
+		path: "/api/v1/bots/:id/services",
+		middlewares: [verifyTokenAdmin],
+		handler: setBotServices
+	},
+	// ------------------ brain Routes ------------------
+	{
+		// Get all brains
 		methods: ["get"],
 		path: "/api/v1/brains",
 		middlewares: [verifyToken],
@@ -124,12 +124,15 @@ export const routes: Route[] = [
 		middlewares: [verifyTokenAdmin],
 		handler: modifyBrain
 	},
-    // --------- services Routes ---------
-    {
-        // Object of services with boolean values, true if the configuration is ok
-        methods: ["get"],
-        path: "/api/v1/services",
-        middlewares: [verifyToken],
-        handler: getServices
-    }
+	// ------------------ services Routes ------------------
+	{
+		/*
+		 * Get the general configuration validation value
+		 * Response contains an object of services with boolean values, true if the configuration is ok
+		 */
+		methods: ["get"],
+		path: "/api/v1/services",
+		middlewares: [verifyToken],
+		handler: getServices
+	}
 ]

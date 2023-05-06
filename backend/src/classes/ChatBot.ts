@@ -6,8 +6,7 @@ import { prisma } from "../main"
 import http from "http"
 import { SocketClient } from "../types/express"
 import { ServiceAccess } from "@prisma/client"
-import { environment } from '../main'
-
+import { environment } from "../main"
 
 /**
  * Instance of a chat bot
@@ -95,7 +94,7 @@ export default class ChatBot {
 
 		// find a free port to use
 		let port = Number(environment.PORT) + 1
-        while (ExpressClient.usedPorts.includes(port)) port++
+		while (ExpressClient.usedPorts.includes(port)) port++
 
 		// create the express client and the web socket server
 		this.expressClient = new ExpressClient([], port)
@@ -256,9 +255,10 @@ export default class ChatBot {
 	 * Closes the server
 	 */
 	public stop() {
-		this.wss.close(error => console.error(error))
+		this.wss.close(error => (error ? console.error(error) : null))
 		this.expressClient.close()
 		for (const client of this.wss.clients) client.terminate()
+		console.log(`ChatBot ${this.name} stopped`)
 	}
 
 	/**
