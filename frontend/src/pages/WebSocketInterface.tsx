@@ -8,28 +8,34 @@ interface props extends defaultProps {
 	socketport: number
 }
 
+interface messageObject {
+	name: string
+	message: string
+}
+
 const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 	const [message, setMessage] = React.useState("")
-	const [recievedMessages, setRecievedMessages] = React.useState<string[]>([])
+	const [recievedMessages, setRecievedMessages] = React.useState<messageObject[]>([])
+	const bottomRef = React.useRef<HTMLDivElement>(null)
 	const navigate = useNavigate()
 	const { token } = useToken()
 	if (!token) navigate("/login")
-	const bottomRef = React.useRef<HTMLDivElement>(null)
 
 	const { sendMessage, readyState } = useWebSocket(`ws://localhost:${socketport}?name=${user.name}`, {
 		onOpen: () => console.log("Connected"),
 		shouldReconnect: () => true,
 		onMessage: e => {
 			if (!user.name) return
-			setRecievedMessages(prevState => [...prevState, `Bot: ${e.data}`])
+			setRecievedMessages(prevState => [...prevState, { name: "Bot", message: e.data }])
 			bottomRef.current?.scrollIntoView({ behavior: "smooth" })
 		}
 	})
 	if (readyState !== 1) return <div>Not connected</div>
 
 	function handleSend() {
+		if (!message || message === "") return
 		sendMessage(message)
-		setRecievedMessages(prevState => [...prevState, `${user.name}: ${message}`])
+		setRecievedMessages(prevState => [...prevState, { name: user.name, message: message }])
 		setMessage("")
 	}
 
@@ -44,7 +50,13 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 			<div className="message-box-container">
 				<div className="message-box">
 					{recievedMessages.map(rMessage => {
-						return <div>{rMessage}</div>
+						const capitalizedName = rMessage.name.charAt(0).toUpperCase() + rMessage.name.slice(1)
+						return (
+							<div className={`message-box-message ${rMessage.name === user.name ? "sender" : "receiver"}`}>
+								<div className={`name`}>{capitalizedName}</div>
+								<div className="text">{rMessage.message}</div>
+							</div>
+						)
 					})}
 					<div ref={bottomRef} />
 				</div>
@@ -52,6 +64,7 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 					<input
 						className="message-input"
 						type="text"
+						placeholder="Your message"
 						value={message}
 						onChange={e => setMessage(e.target.value)}
 						onKeyDown={handleKeyDown}

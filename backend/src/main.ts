@@ -42,7 +42,7 @@ if (discordConfigOK) {
 }
 
 // Express Client
-const expressClient = new ExpressClient(routes, parseInt(process.env.PORT || "4000"), true)
+const expressClient = new ExpressClient(routes, 4000, true)
 createChatBots()
 
 // Graceful Shutdown
