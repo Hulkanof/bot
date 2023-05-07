@@ -269,16 +269,15 @@ export function getChats(req: Request, res: Response) {
 	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
 	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
-	const conversations =
-		ChatBot.conversations && Object.values(ChatBot.conversations).filter(conversation => conversation[0].chatBotName === bot.getName())
-	if (!conversations) return res.status(404).send({ type: "success", data: {} })
 	const sortedConversations: typeof ChatBot.conversations = {}
-	conversations.forEach(conversation => {
-		conversation.forEach(c => {
-			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
-			sortedConversations[c.author].push(c)
-		})
-	})
+	if (ChatBot.conversations)
+		for (const [_author, conversation] of Object.entries(ChatBot.conversations)) {
+			conversation.forEach(c => {
+				if (c.chatBotName !== bot.getName()) return
+				if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+				sortedConversations[c.author].push(c)
+			})
+		}
 
 	res.status(200).send({
 		type: "success",
@@ -295,21 +294,18 @@ export async function getChatForUser(req: Request, res: Response) {
 	const botId = req.params.id
 	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
 	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+	const reqAuthor = req.params.author
 
-	const author = req.params.author
-	const conversations =
-		ChatBot.conversations &&
-		Object.values(ChatBot.conversations).filter(
-			conversation => conversation[0].chatBotName === bot.getName() && conversation[0].author === author
-		)
-	if (!conversations) return res.status(404).send({ type: "success", data: {} })
 	const sortedConversations: typeof ChatBot.conversations = {}
-	conversations.forEach(conversation => {
-		conversation.forEach(c => {
-			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
-			sortedConversations[c.author].push(c)
-		})
-	})
+	if (ChatBot.conversations)
+		for (const [author, conversation] of Object.entries(ChatBot.conversations)) {
+			if (author !== reqAuthor) continue
+			conversation.forEach(c => {
+				if (c.chatBotName !== bot.getName()) return
+				if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+				sortedConversations[c.author].push(c)
+			})
+		}
 
 	res.status(200).send({
 		type: "success",
@@ -327,58 +323,20 @@ export function getChatForUserAndService(req: Request, res: Response) {
 	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
 	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
-	const author = req.params.author
-	const service = req.params.service
-	const conversations =
-		ChatBot.conversations &&
-		Object.values(ChatBot.conversations).filter(conversation => {
-			return typeof conversation[0].service === "string"
-				? conversation[0].chatBotName === bot.getName() && conversation[0].author === author && conversation[0].service === service
-				: conversation[0].chatBotName === bot.getName() && conversation[0].author === author && conversation[0].service.name === service
-		})
-	if (!conversations) return res.status(404).send({ type: "success", data: {} })
-
-	const sortedConversations: typeof ChatBot.conversations = {}
-	conversations.forEach(conversation => {
-		conversation.forEach(c => {
-			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
-			sortedConversations[c.author].push(c)
-		})
-	})
-
-	res.status(200).send({
-		type: "success",
-		data: sortedConversations
-	})
-}
-
-/**
- * Route handler to get the conversations of a bot: /api/v1/bots/:id/chats/:service
- * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
- * @param res Response body will contain the conversations of the bot
- */
-export function getChatForService(req: Request, res: Response) {
-	const botId = req.params.id
-	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+	const reqAuthor = req.params.author
 	const service = req.params.service
 
-	const conversations =
-		ChatBot.conversations &&
-		Object.values(ChatBot.conversations).filter(conversation => {
-			return typeof conversation[0].service === "string"
-				? conversation[0].chatBotName === bot.getName() && conversation[0].service === service
-				: conversation[0].chatBotName === bot.getName() && conversation[0].service.name === service
-		})
-	if (!conversations) return res.status(404).send({ type: "success", data: {} })
-
 	const sortedConversations: typeof ChatBot.conversations = {}
-	conversations.forEach(conversation => {
-		conversation.forEach(c => {
-			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
-			sortedConversations[c.author].push(c)
-		})
-	})
+	if (ChatBot.conversations)
+		for (const [author, conversation] of Object.entries(ChatBot.conversations)) {
+			if (author !== reqAuthor) continue
+			conversation.forEach(c => {
+				if (c.chatBotName !== bot.getName()) return
+				if (typeof c.service === "string" ? c.service !== service : c.service.name !== service) return
+				if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+				sortedConversations[c.author].push(c)
+			})
+		}
 
 	res.status(200).send({
 		type: "success",
