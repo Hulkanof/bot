@@ -1,4 +1,4 @@
-import { getBot, getBots, createBot, deleteBot } from "../api/bots"
+import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService, getChatForService } from "../api/bots"
 import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
 import { createUser, loginUser, getUser } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
@@ -87,6 +87,27 @@ export const routes: Route[] = [
 		path: "/api/v1/bots/:id/services",
 		middlewares: [verifyTokenAdmin],
 		handler: setBotServices
+	},
+	{
+		// Get the chats of a bot
+		methods: ["get"],
+		path: "/api/v1/bots/:id/chats",
+		middlewares: [verifyTokenAdmin],
+		handler: getChats
+	},
+	{
+		// Get the chats of a person with a bot
+		methods: ["get"],
+		path: "/api/v1/bots/:id/chats/:author",
+		middlewares: [verifyTokenAdmin],
+		handler: getChatForUser
+	},
+	{
+		// Get the chats of a person with a bot
+		methods: ["get"],
+		path: "/api/v1/bots/:id/chats/:author/:service",
+		middlewares: [verifyTokenAdmin],
+		handler: getChatForUserAndService
 	},
 	// ------------------ brain Routes ------------------
 	{
