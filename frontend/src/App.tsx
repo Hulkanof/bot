@@ -7,6 +7,7 @@ import Home from "./pages/Home"
 import { useEffect, useState } from "react"
 import useToken from "./hooks/useToken"
 import WebSocketInterface from "./pages/WebSocketInterface"
+import Page404 from "./pages/404"
 
 function App() {
 	const [user, setUser] = useState<User>({
@@ -52,7 +53,7 @@ function App() {
 				<Route path="/login" element={<Login {...props} />} />
 				<Route path="/register" element={<Register {...props} />} />
 				<Route path="/web-client" element={<WebSocketInterface {...props} socketport={4001} />} />
-				<Route path="*" element={<h1>404</h1>} />
+				<Route path="*" element={<Page404 />} />
 			</Routes>
 		</BrowserRouter>
 	)
