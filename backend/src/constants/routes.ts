@@ -1,4 +1,4 @@
-import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService, getChatForService } from "../api/bots"
+import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService } from "../api/bots"
 import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
 import { createUser, loginUser, getUser } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
