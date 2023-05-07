@@ -3,7 +3,7 @@ import "../styles/Register.css"
 import useToken from "../hooks/useToken"
 import { useNavigate } from "react-router-dom"
 
-const Register: React.FC<defaultProps> = ({ setUser, user }) => {
+const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
 	const [email, setEmail] = useState("")

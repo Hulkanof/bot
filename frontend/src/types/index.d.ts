@@ -1,5 +1,4 @@
-interface defaultProps {
-	[key: string]: any
+interface defaultPageProps {
 	user: User
 	setUser: React.Dispatch<React.SetStateAction<User>>
 }

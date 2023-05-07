@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import useToken from "../hooks/useToken"
 import "../styles/messageBox.css"
 
-interface props extends defaultProps {
+interface props extends defaultPageProps {
 	socketport: number
 }
 

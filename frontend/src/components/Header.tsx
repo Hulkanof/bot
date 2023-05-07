@@ -3,13 +3,13 @@ import "../styles/Header.css"
 import React from "react"
 import useToken from "../hooks/useToken"
 
-const Header: React.FC<defaultProps> = ({ user, setUser }) => {
+const Header: React.FC<defaultPageProps> = ({ user, setUser }) => {
 	const { clearToken } = useToken()
 	const navigate = useNavigate()
 
 	async function handleLogout() {
 		clearToken()
-		setUser({ id: "", name: "", email: "" })
+		setUser({ id: "", name: "", email: "", admin: 0 })
 		navigate("/login")
 	}
 

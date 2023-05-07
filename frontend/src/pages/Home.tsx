@@ -2,7 +2,7 @@ import React from "react"
 import { useNavigate } from "react-router-dom"
 import useToken from "../hooks/useToken"
 
-const Home: React.FC<defaultProps> = props => {
+const Home: React.FC<defaultPageProps> = props => {
 	const { user } = props
 	const navigate = useNavigate()
 	const { token } = useToken()

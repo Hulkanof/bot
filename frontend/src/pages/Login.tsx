@@ -3,7 +3,7 @@ import useToken from "../hooks/useToken"
 import { useNavigate } from "react-router-dom"
 import "../styles/Login.css"
 
-const Login: React.FC<defaultProps> = ({ setUser, user }) => {
+const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
 	const [info, setInfo] = useState<{
