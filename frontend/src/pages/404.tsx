@@ -1,4 +1,12 @@
-const Page404 = () => {
+import React, { useEffect } from "react"
+
+const Page404: React.FC = () => {
+	useEffect(() => {
+		setTimeout(() => {
+			window.location.href = "/"
+		}, 5_000)
+	})
+
 	return (
 		<div className="container-404">
 			<h1>Page Not found!</h1>
