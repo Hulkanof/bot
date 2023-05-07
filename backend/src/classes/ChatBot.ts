@@ -105,7 +105,7 @@ export default class ChatBot {
 		this.wss.on("connection", function connection(ws, req) {
 			const urlParams = new URLSearchParams(req.url?.replace("/?", ""))
 			const name = urlParams.get("name")
-			if (!name) return ws.send("Please give your name (/name <name>)")
+			if (!name) return ws.close()
 			ws.send(`Connected to chatBot ${_this.name} as ${name}`)
 			_this.socketClients.push({ ws, name })
 

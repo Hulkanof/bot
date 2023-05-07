@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import "../styles/Register.css"
 import useToken from "../hooks/useToken"
 import { useNavigate } from "react-router-dom"
@@ -39,8 +39,8 @@ const Register: React.FC<defaultProps> = ({ setUser, user }) => {
 			})
 		})
 
-		const data = await res.json()
-		if (!res.ok) {
+		const data: BasicAPIResponse<{ user: User; token: string }> = await res.json()
+		if (data.type === "error") {
 			setInfo({
 				message: `${data.error}`,
 				type: "error"
@@ -48,8 +48,8 @@ const Register: React.FC<defaultProps> = ({ setUser, user }) => {
 			return
 		}
 
-		setUser(data.user)
-		setToken(data.token)
+		setUser(data.data.user)
+		setToken(data.data.token)
 		navigate("/")
 	}
 

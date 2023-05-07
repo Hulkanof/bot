@@ -12,13 +12,13 @@ function App() {
 	const [user, setUser] = useState<User>({
 		id: "",
 		name: "",
-		email: ""
+		email: "",
+		admin: 0
 	})
-
-	const { token } = useToken()
+	const { token, clearToken } = useToken()
 
 	useEffect(() => {
-		if (!token) return setUser({ id: "", name: "", email: "" })
+		if (!token) return setUser({ id: "", name: "", email: "", admin: 0 })
 		if (user.id !== "") return
 		async function fetchUser() {
 			const res = await fetch("/api/v1/user", {
@@ -27,14 +27,18 @@ function App() {
 					Authorization: `Bearer ${token}`
 				}
 			})
-			if (res.ok) {
-				const data = await res.json()
-				setUser({
-					id: data.user.id,
-					name: data.user.name,
-					email: data.user.email
+			const data = await res.json()
+			if (data.type === "success") {
+				return setUser({
+					id: data.data.id,
+					name: data.data.name,
+					email: data.data.email,
+					admin: data.data.admin
 				})
 			}
+			setUser({ id: "", name: "", email: "", admin: 0 })
+			clearToken()
+			window.location.href = "/login"
 		}
 		fetchUser()
 	}, [token])

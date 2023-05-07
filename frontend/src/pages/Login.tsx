@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import useToken from "../hooks/useToken"
 import { useNavigate } from "react-router-dom"
 import "../styles/Login.css"
@@ -31,16 +31,16 @@ const Login: React.FC<defaultProps> = ({ setUser, user }) => {
 			})
 		})
 
-		const data = await res.json()
-		if (!res.ok) {
+		const data: BasicAPIResponse<{ user: User; token: string }> = await res.json()
+		if (data.type === "error") {
 			return setInfo({
 				message: `${data.error}`,
 				type: "error"
 			})
 		}
 
-		setUser(data.user)
-		setToken(data.token)
+		setUser(data.data.user)
+		setToken(data.data.token)
 		navigate("/")
 	}
 
