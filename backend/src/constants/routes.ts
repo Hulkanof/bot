@@ -6,7 +6,7 @@ import type { Route } from "../types/express"
 import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
 import { getBotbrain, setBotBrain } from "../api/bots"
 import { getBotServices, setBotServices } from "../api/bots"
-import { getServices } from "../api/services"
+import { getServices, setService } from "../api/services"
 
 /**
  * Express routes
@@ -134,5 +134,11 @@ export const routes: Route[] = [
 		path: "/api/v1/services",
 		middlewares: [verifyToken],
 		handler: getServices
+	},
+	{
+		methods: ["put"],
+		path: "/api/v1/services/:name",
+		middlewares: [verifyTokenAdmin],
+		handler: setService
 	}
 ]

@@ -1,8 +1,7 @@
 import { Request, Response } from "express"
 import ChatBot from "../classes/ChatBot"
 import { prisma } from "../main"
-import { ServiceAccess } from '@prisma/client'
-
+import { ServiceAccess } from "@prisma/client"
 
 /**
  * Route handler to get the information about the bots: /api/v1/bots
@@ -27,9 +26,12 @@ export async function getBots(_req: Request, res: Response) {
 			})
 		)
 
-		return res.status(200).send(chatBots)
+		return res.status(200).send({
+			type: "success",
+			data: chatBots
+		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -42,22 +44,25 @@ export async function getBot(req: Request, res: Response) {
 	try {
 		const botId = req.params.id
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-		if (!bot) return res.status(404).send({ error: "Bot not found" })
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
 		const brain = await bot.getBrain()
 
 		return res.status(200).send({
-			id: bot.getId(),
-			name: bot.getName(),
-			brain: {
-				id: brain.id,
-				name: brain.name
-			},
-			serviceAccess: bot.serviceAccess,
-			socketPort: bot.getPort()
+			type: "success",
+			data: {
+				id: bot.getId(),
+				name: bot.getName(),
+				brain: {
+					id: brain.id,
+					name: brain.name
+				},
+				serviceAccess: bot.serviceAccess,
+				socketPort: bot.getPort()
+			}
 		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -87,14 +92,28 @@ export async function createBot(req: Request, res: Response) {
 
 		const bot = new ChatBot(dbBot.id, dbBot.name, dbBot.brain, dbBot.serviceAccess)
 
+		const brain = await prisma.brains.findUnique({
+			where: {
+				name: "standard.rive"
+			}
+		})
+		if (!brain) return res.status(500).send({ type: "error", error: "Internal Server Error" })
+
 		return res.status(200).send({
-			id: bot.getId(),
-			name: bot.getName(),
-			serviceAccess: bot.serviceAccess,
-			socketPort: bot.getPort()
+			type: "success",
+			data: {
+				id: bot.getId(),
+				name: bot.getName(),
+				brain: {
+					id: brain.id,
+					name: brain.name
+				},
+				serviceAccess: bot.serviceAccess,
+				socketPort: bot.getPort()
+			}
 		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -107,7 +126,7 @@ export async function deleteBot(req: Request, res: Response) {
 	try {
 		const botId = req.params.id
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-		if (!bot) return res.status(404).send({ error: "Bot not found" })
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
 		bot.delete()
 
@@ -117,9 +136,9 @@ export async function deleteBot(req: Request, res: Response) {
 			}
 		})
 
-		return res.status(200).send({ message: "Bot deleted" })
+		return res.status(200).send({ type: "success", message: "Bot deleted" })
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -132,13 +151,16 @@ export async function getBotbrain(req: Request, res: Response) {
 	try {
 		const botId = req.params.id
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-		if (!bot) return res.status(404).send({ error: "Bot not found" })
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
 		const brain = await bot.getBrain()
 
-		return res.status(200).send(brain)
+		return res.status(200).send({
+			type: "success",
+			data: brain
+		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -151,7 +173,7 @@ export async function setBotBrain(req: Request, res: Response) {
 	try {
 		const botId = req.params.id
 		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-		if (!bot) return res.status(404).send({ error: "Bot not found" })
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
 		const brainName = req.params.brain
 		const brain = await bot.setBrain(brainName)
@@ -166,12 +188,15 @@ export async function setBotBrain(req: Request, res: Response) {
 		})
 
 		return res.status(200).send({
-			botId: bot.getId(),
-			brain,
-			message: "Brain set"
+			type: "success",
+			data: {
+				botId: bot.getId(),
+				brain,
+				message: "Brain set"
+			}
 		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -181,11 +206,14 @@ export async function setBotBrain(req: Request, res: Response) {
  * @param res Response body will contain the service access of the bot
  */
 export async function getBotServices(req: Request, res: Response) {
-    const botId = req.params.id
-    const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-    if (!bot) return res.status(404).send({ error: "Bot not found" })
+	const botId = req.params.id
+	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
-    res.status(200).send(bot.serviceAccess)
+	res.status(200).send({
+		type: "success",
+		data: bot.serviceAccess
+	})
 }
 
 /**
@@ -194,36 +222,39 @@ export async function getBotServices(req: Request, res: Response) {
  * @param res Response body will contain the new access for the bot
  */
 export async function setBotServices(req: Request, res: Response) {
-    try {
-    const botId = req.params.id
-    const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
-    if (!bot) return res.status(404).send({ error: "Bot not found" })
+	try {
+		const botId = req.params.id
+		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
-    const services = req.body?.services as Partial<ServiceAccess>
-    if (!services) return res.status(400).send({ error: "Body was not correctly" })
+		const services = req.body?.services as Partial<ServiceAccess>
+		if (!services) return res.status(400).send({ type: "error", error: "Body was not correctly" })
 
-    const serviceAccess = {
-        discord: services.discord ? services.discord : bot.serviceAccess.discord,
-        mastodon: services.mastodon ? services.mastodon : bot.serviceAccess.mastodon,
-        slack: services.slack ? services.slack : bot.serviceAccess.slack
-    }
+		const serviceAccess = {
+			discord: services.discord ? services.discord : bot.serviceAccess.discord,
+			mastodon: services.mastodon ? services.mastodon : bot.serviceAccess.mastodon,
+			slack: services.slack ? services.slack : bot.serviceAccess.slack
+		}
 
-    const dbServiceAccess = await prisma.bots.update({
-        where: {
-            id: botId
-        },
-        data: {
-            serviceAccess
-        }
-    })
+		const dbServiceAccess = await prisma.bots.update({
+			where: {
+				id: botId
+			},
+			data: {
+				serviceAccess
+			}
+		})
 
-    if (!dbServiceAccess) return res.status(500).send({ error: "Data could not be set in the database" })
+		if (!dbServiceAccess) return res.status(500).send({ type: "error", error: "Data could not be set in the database" })
 
-    bot.serviceAccess = dbServiceAccess.serviceAccess
+		bot.serviceAccess = dbServiceAccess.serviceAccess
 
-    res.status(200).send(bot.serviceAccess)
-    } catch (error) {
-        console.error(error)
-        return res.status(500).send({ error: "internal Error" })
-    }
+		res.status(200).send({
+			type: "success",
+			data: bot.serviceAccess
+		})
+	} catch (error) {
+		console.error(error)
+		return res.status(500).send({ type: "error", error: "internal Error" })
+	}
 }
