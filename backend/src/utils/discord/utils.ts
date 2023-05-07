@@ -30,6 +30,8 @@ export async function handlePrivateChat(chats: Map<string, IChat[]>, message: Me
 			if (!ChatBot.conversations[message.author.username]) ChatBot.conversations[message.author.username] = []
 			ChatBot.conversations[message.author.username].push({
 				chatBotName: name,
+				author: message.author.username,
+				service: "discord",
 				question: message.content,
 				answer: reply
 			})

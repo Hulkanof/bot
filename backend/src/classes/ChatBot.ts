@@ -58,6 +58,8 @@ export default class ChatBot {
 	public static conversations: {
 		[username: string]: {
 			chatBotName: string
+			service: { name: "webSocketServer"; port: number } | "discord" | "mastodon" | "slack"
+			author: string
 			question: string
 			answer: string
 		}[]
@@ -157,7 +159,9 @@ export default class ChatBot {
 			if (!ChatBot.conversations[username]) ChatBot.conversations[username] = []
 			ChatBot.conversations[username].push({
 				chatBotName: this.name,
+				service: { name: "webSocketServer", port: this.expressClient.getPort() },
 				question: data.toString(),
+				author: username,
 				answer: reply
 			})
 		})

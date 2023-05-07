@@ -255,6 +255,133 @@ export async function setBotServices(req: Request, res: Response) {
 		})
 	} catch (error) {
 		console.error(error)
-		return res.status(500).send({ type: "error", error: "internal Error" })
+		return res.status(500).send({ type: "error", error: "Internal Error" })
 	}
+}
+
+/**
+ * Route handler to get the conversations of a bot: /api/v1/bots/:id/chats
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the conversations of the bot
+ */
+export function getChats(req: Request, res: Response) {
+	const botId = req.params.id
+	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+
+	const conversations =
+		ChatBot.conversations && Object.values(ChatBot.conversations).filter(conversation => conversation[0].chatBotName === bot.getName())
+	if (!conversations) return res.status(404).send({ type: "success", data: {} })
+	const sortedConversations: typeof ChatBot.conversations = {}
+	conversations.forEach(conversation => {
+		conversation.forEach(c => {
+			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+			sortedConversations[c.author].push(c)
+		})
+	})
+
+	res.status(200).send({
+		type: "success",
+		data: sortedConversations
+	})
+}
+
+/**
+ * Route handler to get the conversations of a bot: /api/v1/bots/:id/chats/:author
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the conversations of the bot
+ */
+export async function getChatForUser(req: Request, res: Response) {
+	const botId = req.params.id
+	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+
+	const author = req.params.author
+	const conversations =
+		ChatBot.conversations &&
+		Object.values(ChatBot.conversations).filter(
+			conversation => conversation[0].chatBotName === bot.getName() && conversation[0].author === author
+		)
+	if (!conversations) return res.status(404).send({ type: "success", data: {} })
+	const sortedConversations: typeof ChatBot.conversations = {}
+	conversations.forEach(conversation => {
+		conversation.forEach(c => {
+			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+			sortedConversations[c.author].push(c)
+		})
+	})
+
+	res.status(200).send({
+		type: "success",
+		data: sortedConversations
+	})
+}
+
+/**
+ * Route handler to get the conversations of a bot: /api/v1/bots/:id/chats/:author/:service
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the conversations of the bot
+ */
+export function getChatForUserAndService(req: Request, res: Response) {
+	const botId = req.params.id
+	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+
+	const author = req.params.author
+	const service = req.params.service
+	const conversations =
+		ChatBot.conversations &&
+		Object.values(ChatBot.conversations).filter(conversation => {
+			return typeof conversation[0].service === "string"
+				? conversation[0].chatBotName === bot.getName() && conversation[0].author === author && conversation[0].service === service
+				: conversation[0].chatBotName === bot.getName() && conversation[0].author === author && conversation[0].service.name === service
+		})
+	if (!conversations) return res.status(404).send({ type: "success", data: {} })
+
+	const sortedConversations: typeof ChatBot.conversations = {}
+	conversations.forEach(conversation => {
+		conversation.forEach(c => {
+			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+			sortedConversations[c.author].push(c)
+		})
+	})
+
+	res.status(200).send({
+		type: "success",
+		data: sortedConversations
+	})
+}
+
+/**
+ * Route handler to get the conversations of a bot: /api/v1/bots/:id/chats/:service
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the conversations of the bot
+ */
+export function getChatForService(req: Request, res: Response) {
+	const botId = req.params.id
+	const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+	if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+	const service = req.params.service
+
+	const conversations =
+		ChatBot.conversations &&
+		Object.values(ChatBot.conversations).filter(conversation => {
+			return typeof conversation[0].service === "string"
+				? conversation[0].chatBotName === bot.getName() && conversation[0].service === service
+				: conversation[0].chatBotName === bot.getName() && conversation[0].service.name === service
+		})
+	if (!conversations) return res.status(404).send({ type: "success", data: {} })
+
+	const sortedConversations: typeof ChatBot.conversations = {}
+	conversations.forEach(conversation => {
+		conversation.forEach(c => {
+			if (!sortedConversations[c.author]) sortedConversations[c.author] = []
+			sortedConversations[c.author].push(c)
+		})
+	})
+
+	res.status(200).send({
+		type: "success",
+		data: sortedConversations
+	})
 }
