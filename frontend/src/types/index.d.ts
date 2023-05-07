@@ -44,3 +44,9 @@ interface ServiceAccess {
 	mastodon: boolean
 	slack: boolean
 }
+
+type AvailableServices = ServiceAccess
+
+interface ServiceConfig {
+	[key: string]: any
+}
