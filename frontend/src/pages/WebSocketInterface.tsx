@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import useWebSocket from "react-use-websocket"
 import { useNavigate } from "react-router-dom"
 import useToken from "../hooks/useToken"
@@ -30,7 +30,6 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 			bottomRef.current?.scrollIntoView({ behavior: "smooth" })
 		}
 	})
-	if (readyState !== 1) return <div>Not connected</div>
 
 	function handleSend() {
 		if (!message || message === "") return
@@ -45,6 +44,11 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 		}
 	}
 
+	useEffect(() => {
+		bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+	}, [recievedMessages])
+
+	if (readyState !== 1) return <div>Not connected</div>
 	return (
 		<div className="message-grid">
 			<div className="message-box-container">
