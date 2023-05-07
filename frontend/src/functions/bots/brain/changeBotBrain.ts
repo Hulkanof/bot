@@ -1,3 +1,11 @@
+/**
+ * Send a request to change the brain of a bot
+ * @param token The user token
+ * @param BotId The id of the bot
+ * @param brainName The name of the brain to change to
+ * @returns The new brain
+ * @throws Error if the request fails
+ */
 export default async function changeBotBrain(token: string, BotId: string, brainName: string): Promise<Brain> {
 	const res = await fetch(`/api/v1/bots/${BotId}/brain/${brainName}`, {
 		method: "PUT",

@@ -1,3 +1,10 @@
+/**
+ * Function to delete a brain
+ * @param token The user token
+ * @param brainId The id of the brain
+ * @returns A message
+ * @throws Error if the request fails
+ */
 export default async function deleteBrain(token: string, brainId: string): Promise<string> {
 	const response = await fetch(`/api/v1/brains/${brainId}`, {
 		method: "DELETE",

@@ -1,3 +1,11 @@
+/**
+ * This function changes the services of a bot
+ * @param token The user token
+ * @param botId The id of the bot
+ * @param services The new services
+ * @returns The new services
+ * @throws Error if the request fails
+ */
 export default async function changeBotServices(token: string, botId: string, services: ServiceAccess): Promise<ServiceAccess> {
 	const response = await fetch(`/api/v1/bots/${botId}/services`, {
 		method: "PUT",

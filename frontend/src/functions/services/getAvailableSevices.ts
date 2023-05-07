@@ -1,3 +1,9 @@
+/**
+ * Get available services
+ * @param token The user token
+ * @returns The available services
+ * @throws Error if the request fails
+ */
 export default async function getAvailableServices(token: string): Promise<AvailableServices> {
 	const response = await fetch(`/api/v1/services`, {
 		method: "GET",

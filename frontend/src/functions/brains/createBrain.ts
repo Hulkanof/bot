@@ -1,3 +1,10 @@
+/**
+ * This function creates a brain
+ * @param token The user token
+ * @param brain The brain to create
+ * @returns The created brain
+ * @throws Error if the request fails
+ */
 export default async function createBrain(token: string, brain: Omit<Brain, "id">): Promise<Brain> {
 	const response = await fetch(`/api/v1/brains/create/${brain.name}`, {
 		method: "POST",
