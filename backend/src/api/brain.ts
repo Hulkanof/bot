@@ -10,9 +10,12 @@ export async function getBrains(_req: Request, res: Response) {
 	try {
 		const brains = await prisma.brains.findMany()
 
-		return res.status(200).send(brains)
+		return res.status(200).send({
+			type: "success",
+			data: brains
+		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -30,11 +33,14 @@ export async function getBrain(req: Request, res: Response) {
 			}
 		})
 
-		if (!brain) return res.status(404).send({ error: "Brain not found" })
+		if (!brain) return res.status(404).send({ type: "error", error: "Brain not found" })
 
-		return res.status(200).send(brain)
+		return res.status(200).send({
+			type: "success",
+			data: brain
+		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -54,10 +60,13 @@ export async function createBrain(req: Request, res: Response) {
 			}
 		})
 
-		return res.status(200).send(brain)
+		return res.status(200).send({
+			type: "success",
+			data: brain
+		})
 	} catch (error: any) {
-		if (error.code === "P2002") return res.status(409).send({ error: "Brain already exists" })
-		return res.status(500).send({ error: "Internal Server Error" })
+		if (error.code === "P2002") return res.status(409).send({ type: "error", error: "Brain already exists" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -76,9 +85,9 @@ export async function deleteBrain(req: Request, res: Response) {
 			}
 		})
 
-		if (!brain) return res.status(404).send({ error: "Brain not found" })
+		if (!brain) return res.status(404).send({ type: "error", error: "Brain not found" })
 
-		if (brain.name === "standard.rive") return res.status(403).send({ error: "Cannot delete standard.rive" })
+		if (brain.name === "standard.rive") return res.status(403).send({ type: "error", error: "Cannot delete standard.rive" })
 
 		await prisma.brains.delete({
 			where: {
@@ -86,9 +95,9 @@ export async function deleteBrain(req: Request, res: Response) {
 			}
 		})
 
-		return res.status(200).send({ message: "Brain deleted" })
+		return res.status(200).send({ type: "success", message: "Brain deleted" })
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -100,18 +109,18 @@ export async function deleteBrain(req: Request, res: Response) {
 export async function modifyBrain(req: Request, res: Response) {
 	try {
 		const id = req.params.id
-		if (!req.body) return res.status(400).send({ error: "Missing Body" })
+		if (!req.body) return res.status(400).send({ type: "error", error: "Missing Body" })
 
 		const { name, data } = req.body
-		if (!name || !data) return res.status(400).send({ error: "Missing Body" })
-		if (name === "standard.rive") return res.status(403).send({ error: "Cannot modify standard.rive" })
+		if (!name || !data) return res.status(400).send({ type: "error", error: "Missing Body" })
+		if (name === "standard.rive") return res.status(403).send({ type: "error", error: "Cannot modify standard.rive" })
 
 		const brain = await prisma.brains.findUnique({
 			where: {
 				id
 			}
 		})
-		if (!brain) return res.status(404).send({ error: "Brain not found" })
+		if (!brain) return res.status(404).send({ type: "error", error: "Brain not found" })
 
 		const modifiedBrain = await prisma.brains.update({
 			where: {
@@ -123,8 +132,11 @@ export async function modifyBrain(req: Request, res: Response) {
 			}
 		})
 
-		return res.status(200).send(modifiedBrain)
+		return res.status(200).send({
+			type: "success",
+			data: modifiedBrain
+		})
 	} catch (error) {
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }

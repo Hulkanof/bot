@@ -12,15 +12,15 @@ require("dotenv").config()
  */
 export async function getUser(req: Request, res: Response) {
 	try {
-		if (!req.headers.authorization) return res.status(400).send({ error: "Not Authorized" })
+		if (!req.headers.authorization) return res.status(400).send({ type: "error", error: "Not Authorized" })
 		const token = req.headers.authorization.split(" ")[1]
 		const user = verifyAccessToken(token)
 
-		res.status(200).send({ user })
+		res.status(200).send({ type: "success", data: user })
 	} catch (error) {
-		if (error instanceof JsonWebTokenError) return res.status(400).send({ error: "Invalid token" })
+		if (error instanceof JsonWebTokenError) return res.status(400).send({ type: "error", error: "Invalid token" })
 
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -31,10 +31,10 @@ export async function getUser(req: Request, res: Response) {
  */
 export async function loginUser(req: Request, res: Response) {
 	try {
-		if (!req.body) return res.status(400).send({ error: "No request body" })
+		if (!req.body) return res.status(400).send({ type: "error", error: "No request body" })
 
 		const { username, password } = req.body
-		if (!username || !password) return res.status(400).send({ error: "Missing fields" })
+		if (!username || !password) return res.status(400).send({ type: "error", error: "Missing fields" })
 
 		const passhash = createHash("sha256").update(req.body.password).digest("hex")
 
@@ -43,16 +43,16 @@ export async function loginUser(req: Request, res: Response) {
 				name: username
 			}
 		})
-		if (!user) return res.status(400).send({ error: "User not found" })
+		if (!user) return res.status(400).send({ type: "error", error: "User not found" })
 
-		if (user.password !== passhash) return res.status(400).send({ error: "Incorrect password" })
+		if (user.password !== passhash) return res.status(400).send({ type: "error", error: "Incorrect password" })
 
 		const { password: _, ...userWithoutPassword } = user
 		const token = generateAccessToken(userWithoutPassword)
-		res.status(200).send({ user: userWithoutPassword, token })
+		res.status(200).send({ type: "success", data: { user: userWithoutPassword, token } })
 	} catch (error: any) {
 		console.log(error)
-		return res.status(500).send({ error: "Internal Server Error" })
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
 
@@ -63,10 +63,10 @@ export async function loginUser(req: Request, res: Response) {
  */
 export async function createUser(req: Request, res: Response) {
 	try {
-		if (!req.body) return res.status(400).send({ error: "No request body" })
+		if (!req.body) return res.status(400).send({ type: "error", error: "No request body" })
 
 		const { username, email, password } = req.body
-		if (!username || !email || !password) return res.status(400).send({ error: "Missing fields" })
+		if (!username || !email || !password) return res.status(400).send({ type: "error", error: "Missing fields" })
 
 		const passhash = createHash("sha256").update(req.body.password).digest("hex")
 		const user = await prisma.user.create({
@@ -83,13 +83,13 @@ export async function createUser(req: Request, res: Response) {
 			}
 		})
 
-		if (!user) return res.status(400).send({ error: "User not created" })
+		if (!user) return res.status(400).send({ type: "error", error: "User not created" })
 
 		const token = generateAccessToken(user)
-		res.status(200).send({ user: user, token })
+		res.status(200).send({ type: "success", data: { user: user, token } })
 	} catch (error: any) {
 		console.error(error)
-		if (error.code === "P2002") return res.status(400).send({ error: "User already exists" })
-		return res.status(500).send({ error: "Internal error!" })
+		if (error.code === "P2002") return res.status(400).send({ type: "error", error: "User already exists" })
+		return res.status(500).send({ type: "error", error: "Internal error!" })
 	}
 }

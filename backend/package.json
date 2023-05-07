@@ -9,6 +9,11 @@
 		"build": "npx tsc",
 		"prettier": "prettier --write ./src/**/*.{ts,js,json}"
 	},
+	"nodemonConfig": {
+		"ignore": [
+			"src/config/*.json"
+		]
+	},
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
