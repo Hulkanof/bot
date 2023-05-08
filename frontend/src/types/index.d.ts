@@ -46,6 +46,19 @@ interface ServiceAccess {
 
 type AvailableServices = ServiceAccess
 
-interface ServiceConfig {
-	[key: string]: any
+type ServiceConfig = DiscordServiceConfig | MastodonServiceConfig | SlackServiceConfig
+
+interface DiscordServiceConfig {
+	type: "discord"
+	token?: string
+	clientId?: string
+	clientSecret?: string
+}
+
+interface MastodonServiceConfig {
+	type: "mastodon"
+}
+
+interface SlackServiceConfig {
+	type: "slack"
 }
