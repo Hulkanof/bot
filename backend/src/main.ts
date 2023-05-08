@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client"
 import ExpressClient from "./classes/ExpressClient"
 import discordConfig from "./config/discord.json"
+import mastodonConfig from "./config/mastodon.json"
+import Mastodon from "./classes/Mastodon"
 import DiscordBot from "./classes/DiscordBot"
 import { exit } from "process"
 import type { DiscordClientConfig } from "./types/discord"
@@ -10,10 +12,11 @@ import createChatBots from "./utils/createChatBots"
 import ChatBot from "./classes/ChatBot"
 import path from "path"
 import fs from "fs"
+import { MastoConfigProps } from "masto"
 require("dotenv").config()
 
 let discordConfigOK = discordConfig.token && discordConfig.clientId && discordConfig.clientSecret
-let mastodonConfigOK = false
+let mastodonConfigOK = mastodonConfig.url && mastodonConfig.token
 let slackConfigOK = false
 
 // Check for required environment variables
@@ -41,6 +44,17 @@ let discordBot: DiscordBot | undefined
 if (discordConfigOK) {
 	const config = discordConfig as DiscordClientConfig
 	discordBot = new DiscordBot(config)
+}
+
+// Mastodon Client
+let mastodonBot: Mastodon | undefined
+if (mastodonConfigOK) {
+	const config = {
+		url: mastodonConfig.url,
+		accessToken: mastodonConfig.token
+	} satisfies MastoConfigProps
+
+	mastodonBot = new Mastodon(config)
 }
 
 function changeDiscordBot() {
