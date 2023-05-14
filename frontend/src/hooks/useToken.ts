@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 const useToken = () => {
-	const [token, setToken] = useState<string | null>(null)
+	const [token, setToken] = useState<string | null | undefined>(undefined)
 
 	function saveToken(userToken: string) {
 		sessionStorage.setItem("token", userToken)

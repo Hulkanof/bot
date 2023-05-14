@@ -26,9 +26,11 @@ export default function useQuery<T>(fn: (...args: any[]) => Promise<T>, options?
 			setError(error as Error)
 		}
 		setIsLoading(false)
+		setTimerReset(prev => !prev)
 	}, [token])
 
 	useEffect(() => {
+		if (!token) return
 		if (!options || !options.refetchTimer || options.refetchTimer <= 0) return
 		setIsRefetching(true)
 		setTimeout(() => {

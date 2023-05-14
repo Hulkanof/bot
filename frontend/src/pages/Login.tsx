@@ -1,6 +1,6 @@
 import { useState } from "react"
 import useToken from "../hooks/useToken"
-import { useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import "../styles/Login.css"
 
 const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
@@ -11,9 +11,8 @@ const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		type: string
 	}>()
 	const { token, setToken } = useToken()
-	const navigate = useNavigate()
 
-	if (token || user.id !== "") navigate("/")
+	if (token === null || user.id !== "") return <Navigate to="/" />
 
 	async function handleSubmit() {
 		if (username === "" || password === "")
