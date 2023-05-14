@@ -1,7 +1,7 @@
 import { useState } from "react"
 import "../styles/Register.css"
 import useToken from "../hooks/useToken"
-import { Navigate } from "react-router-dom"
+import { useNavigate, Navigate } from "react-router-dom"
 
 const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	const [username, setUsername] = useState("")
@@ -11,6 +11,7 @@ const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		message: string
 		type: string
 	}>()
+	const navigate = useNavigate()
 	const { token, setToken } = useToken()
 
 	if (token === null || user.id !== "") return <Navigate to="/" />
