@@ -1,7 +1,7 @@
 import { useState } from "react"
 import "../styles/Register.css"
 import useToken from "../hooks/useToken"
-import { useNavigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 
 const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	const [username, setUsername] = useState("")
@@ -12,9 +12,8 @@ const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		type: string
 	}>()
 	const { token, setToken } = useToken()
-	const navigate = useNavigate()
 
-	if (token || user.id !== "") navigate("/")
+	if (token === null || user.id !== "") return <Navigate to="/" />
 
 	async function handleSubmit() {
 		if (username === "" || password === "" || email === "")
