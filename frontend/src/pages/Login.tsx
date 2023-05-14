@@ -1,6 +1,6 @@
 import { useState } from "react"
 import useToken from "../hooks/useToken"
-import { Navigate } from "react-router-dom"
+import { useNavigate, Navigate } from "react-router-dom"
 import "../styles/Login.css"
 
 const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
@@ -10,6 +10,7 @@ const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		message: string
 		type: string
 	}>()
+	const navigate = useNavigate()
 	const { token, setToken } = useToken()
 
 	if (token === null || user.id !== "") return <Navigate to="/" />
