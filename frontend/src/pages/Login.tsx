@@ -1,9 +1,9 @@
 import { useState } from "react"
 import useToken from "../hooks/useToken"
-import { useNavigate, Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import "../styles/Login.css"
 
-const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
+const Login: React.FC<defaultPageProps> = ({ setUser }) => {
 	const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
 	const [info, setInfo] = useState<{
@@ -11,9 +11,7 @@ const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		type: string
 	}>()
 	const navigate = useNavigate()
-	const { token, setToken } = useToken()
-
-	if (token === null || user.id !== "") return <Navigate to="/" />
+	const { setToken } = useToken()
 
 	async function handleSubmit() {
 		if (username === "" || password === "")
@@ -45,7 +43,7 @@ const Login: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	}
 
 	return (
-		<div className="grid h-full">
+		<div className="login-container">
 			<div className="login">
 				<input className="login-input" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
 				<input className="login-input" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />

@@ -1,7 +1,12 @@
+.register-container {
+	display: grid;
+	place-items: center;
+	height: calc(100vh - 10rem);
+}
+
 .register {
 	place-self: center;
 	width: 30rem;
-	height: 30rem;
 	align-items: center;
 	display: flex;
 	flex-direction: column;

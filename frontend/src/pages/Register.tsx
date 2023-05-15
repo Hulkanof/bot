@@ -1,9 +1,9 @@
 import { useState } from "react"
 import "../styles/Register.css"
 import useToken from "../hooks/useToken"
-import { useNavigate, Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
-const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
+const Register: React.FC<defaultPageProps> = ({ setUser }) => {
 	const [username, setUsername] = useState("")
 	const [password, setPassword] = useState("")
 	const [email, setEmail] = useState("")
@@ -12,9 +12,7 @@ const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 		type: string
 	}>()
 	const navigate = useNavigate()
-	const { token, setToken } = useToken()
-
-	if (token === null || user.id !== "") return <Navigate to="/" />
+	const { setToken } = useToken()
 
 	async function handleSubmit() {
 		if (username === "" || password === "" || email === "")
@@ -54,7 +52,7 @@ const Register: React.FC<defaultPageProps> = ({ setUser, user }) => {
 	}
 
 	return (
-		<div className="grid h-full">
+		<div className="register-container">
 			<div className="register">
 				<input className="register-input" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
 				<input className="register-input" type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
