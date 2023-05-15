@@ -1,14 +1,10 @@
 import React from "react"
-import useToken from "../hooks/useToken"
-import useQuery from "../hooks/useQuery"
-import getBrains from "../functions/brains/getBrains"
+import useBots from "../hooks/useBots"
 
 const Home: React.FC<defaultPageProps> = props => {
-	const { user } = props
-	const { token, isLoading: tokenLoading } = useToken()
-	const { data: brains, isLoading, error } = useQuery(getBrains, { refetchTimer: 5000, functionParams: [token] })
+	const { user, token } = props
+	const { data: bots, isLoading, error } = useBots(token)
 
-	if (tokenLoading) return <div>Loading...</div>
 	if (isLoading) return <div>Loading...</div>
 	if (error) return <div>Error: {error.message}</div>
 
@@ -23,13 +19,16 @@ const Home: React.FC<defaultPageProps> = props => {
 				<p>Admin: {user.admin}</p>
 			</div>
 			<div>
-				<h2>Brains</h2>
-				{brains?.map((brain, index) => (
-					<div key={index}>
-						<h3>{brain.name}</h3>
-						<p>{brain.data.slice(0, 30000) + " ..."}</p>
-					</div>
-				))}
+				<h2>Bots</h2>
+				<ul>
+					{bots?.map((bot, index) => (
+						<li key={index}>
+							<h3>{bot.name}</h3>
+							<p>id: {bot.id}</p>
+							<p>brain: {bot.brain.name}</p>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	)

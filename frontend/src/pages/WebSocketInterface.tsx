@@ -1,7 +1,5 @@
 import React, { useEffect } from "react"
 import useWebSocket from "react-use-websocket"
-import { useNavigate } from "react-router-dom"
-import useToken from "../hooks/useToken"
 import "../styles/messageBox.css"
 
 interface props extends defaultPageProps {
@@ -17,9 +15,6 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 	const [message, setMessage] = React.useState("")
 	const [recievedMessages, setRecievedMessages] = React.useState<messageObject[]>([])
 	const bottomRef = React.useRef<HTMLDivElement>(null)
-	const navigate = useNavigate()
-	const { token } = useToken()
-	if (!token) navigate("/login")
 
 	const { sendMessage, readyState } = useWebSocket(`ws://localhost:${socketport}?name=${user.name}`, {
 		onOpen: () => console.log("Connected"),
@@ -53,10 +48,10 @@ const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
 		<div className="message-grid">
 			<div className="message-box-container">
 				<div className="message-box">
-					{recievedMessages.map(rMessage => {
+					{recievedMessages.map((rMessage, index) => {
 						const capitalizedName = rMessage.name.charAt(0).toUpperCase() + rMessage.name.slice(1)
 						return (
-							<div className={`message-box-message ${rMessage.name === user.name ? "sender" : "receiver"}`}>
+							<div key={index} className={`message-box-message ${rMessage.name === user.name ? "sender" : "receiver"}`}>
 								<div className={`name`}>{capitalizedName}</div>
 								<div className="text">{rMessage.message}</div>
 							</div>
