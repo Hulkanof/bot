@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 const useToken = () => {
-	const [token, setToken] = useState<string | null | undefined>(undefined)
+	const [token, setToken] = useState<string>("")
 	const [isLoading, setIsLoading] = useState(true)
 	function saveToken(userToken: string) {
 		localStorage.setItem("token", userToken)
@@ -10,12 +10,12 @@ const useToken = () => {
 
 	function clearToken() {
 		localStorage.removeItem("token")
-		setToken(null)
+		setToken("")
 	}
 
 	useEffect(() => {
 		const localToken = localStorage.getItem("token")
-		if (typeof localToken !== "undefined") setToken(localToken)
+		if (localToken) setToken(localToken)
 		setIsLoading(false)
 	}, [])
 

@@ -23,7 +23,7 @@ function App() {
 
 	useEffect(() => {
 		if (isLoading) return
-		if (!token) {
+		if (token === "") {
 			setUser({ id: "", name: "", email: "", admin: 0 })
 			if (location.pathname !== "/register") navigate("/login")
 			return
@@ -52,9 +52,9 @@ function App() {
 			clearToken()
 		}
 		fetchUser()
-	}, [token])
+	}, [token, isLoading])
 
-	const props = { user, setUser }
+	const props = { user, setUser, token }
 	return (
 		<>
 			<Header {...props} />

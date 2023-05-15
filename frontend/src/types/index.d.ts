@@ -1,6 +1,7 @@
 interface defaultPageProps {
 	user: User
 	setUser: React.Dispatch<React.SetStateAction<User>>
+	token: string
 }
 
 type BasicAPIResponse<T> = BasicAPIResponseError | BasicAPIResponseNoError<T>
