@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import ExpressClient from "./classes/ExpressClient"
 import discordConfig from "./config/discord.json"
 import mastodonConfig from "./config/mastodon.json"
+import slackConfig from "./config/slack.json"
 import Mastodon from "./classes/Mastodon"
 import DiscordBot from "./classes/DiscordBot"
 import { exit } from "process"
@@ -10,6 +11,7 @@ import initDB from "./utils/initDB"
 import { routes } from "./constants/routes"
 import createChatBots from "./utils/createChatBots"
 import ChatBot from "./classes/ChatBot"
+import SlackClient from "./classes/SlackClient"
 import path from "path"
 import fs from "fs"
 import { MastoConfigProps } from "masto"
@@ -17,7 +19,7 @@ require("dotenv").config()
 
 let discordConfigOK = discordConfig.token && discordConfig.clientId && discordConfig.clientSecret
 let mastodonConfigOK = mastodonConfig.url && mastodonConfig.token
-let slackConfigOK = false
+let slackConfigOK = slackConfig.signingSecret && slackConfig.token && slackConfig.appToken
 
 // Check for required environment variables
 if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL not set")
@@ -25,6 +27,8 @@ if (!process.env.TOKEN_SECRET) throw new Error("TOKEN_SECRET not set")
 if (!discordConfigOK) console.warn("Incorrect Discord config!")
 if (!mastodonConfigOK) console.warn("Incorrect Mastodon Config!")
 if (!slackConfigOK) console.warn("Incorrect Slack Config!")
+
+let botsReady = false
 
 let environment = {
 	DATABASE_URL: process.env.DATABASE_URL,
@@ -57,6 +61,16 @@ if (mastodonConfigOK) {
 	mastodonBot = new Mastodon(config)
 }
 
+// Slack Client
+let slackBot: SlackClient | undefined
+if (slackConfigOK) {
+	try {
+		slackBot = new SlackClient(slackConfig.signingSecret, slackConfig.token, slackConfig.appToken)
+	} catch (err) {
+		console.error("Error creating Slack client:", err)
+	}
+}
+
 function changeDiscordBot() {
 	const discordPath = path.join(__dirname, "./config/discord.json")
 	const buffer = fs.readFileSync(discordPath)
@@ -74,9 +88,29 @@ function changeDiscordBot() {
 	}
 }
 
+function changeSlackBot() {
+	const slackPath = path.join(__dirname, "./config/slack.json")
+	const buffer = fs.readFileSync(slackPath)
+	const slackConfig = JSON.parse(buffer.toString())
+	slackConfigOK = slackConfig.signingSecret && slackConfig.token
+	if (slackBot) slackBot.stop()
+	if (slackConfigOK) {
+		slackBot = new SlackClient(slackConfig.signingSecret, slackConfig.token, slackConfig.appToken)
+	}
+
+	environment = {
+		...environment,
+		slackConfigOK: !!slackConfigOK
+	}
+}
+
 // Express Client
 const expressClient = new ExpressClient(routes, 4000, true)
 createChatBots()
+
+function setBotsReady(ready: boolean) {
+	botsReady = true
+}
 
 // Graceful Shutdown
 process.on("SIGTERM", async () => {
@@ -95,4 +129,4 @@ process.on("SIGINT", async () => {
 	exit(0)
 })
 
-export { discordBot, expressClient, prisma, environment, changeDiscordBot }
+export { discordBot, slackBot, botsReady, expressClient, prisma, environment, changeDiscordBot, changeSlackBot, setBotsReady }
