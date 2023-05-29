@@ -9,6 +9,9 @@ import useToken from "./hooks/useToken"
 import WebSocketInterface from "./pages/WebSocketInterface"
 import Page404 from "./pages/404"
 import { useNavigate, useLocation } from "react-router-dom"
+import {SideBarMenuItem} from "./types/SideBarMenu"
+import {FcAdvertising} from "react-icons/fc"
+import { SideBarMenu } from "./components/SideBarMenu"
 
 function App() {
 	const [user, setUser] = useState<User>({
@@ -55,16 +58,29 @@ function App() {
 	}, [token, isLoading])
 
 	const props = { user, setUser, token }
+
+	const items: SideBarMenuItem[] = [
+		{
+			id: "1",
+			label: "Home",
+			icon : FcAdvertising,
+			url : "/"
+		},
+	];
+
 	return (
 		<>
 			<Header {...props} />
-			<Routes>
+			<div className="App">
+				<SideBarMenu items={items}/>
+				<Routes>
 				<Route path="/" element={<Home {...props} />} />
 				<Route path="/login" element={<Login {...props} />} />
 				<Route path="/register" element={<Register {...props} />} />
 				<Route path="/web-client" element={<WebSocketInterface {...props} socketport={4001} />} />
 				<Route path="*" element={<Page404 />} />
-			</Routes>
+				</Routes>
+			</div>
 		</>
 	)
 }

@@ -5,21 +5,23 @@
 .SideBarMenu{
     background-color: black;
     color: black;
-    position: absolute;
+    position: relative;
     left: 0;
     top: 0;
     height: 100%;
     display: flex;
     flex-direction: column;
+    z-index: 2;
+
 
     @include transition(width);
 
     &.expanded{
-        width: 300px;
+        width: 10vw;
     }
 
     &.collapsed{
-        width: 50px;
+        width: 3vw;
     }
 
     .menuButton{

@@ -6,6 +6,7 @@
 	justify-content: space-between;
 	align-items: center;
 	color: aliceblue;
+	z-index: 1;
 }
 
 .header-title {
