@@ -6,6 +6,28 @@ import { JsonWebTokenError } from "jsonwebtoken"
 require("dotenv").config()
 
 /**
+ * Route handler to get all users: /api/v1/users
+ * @param req Request
+ * @param res Response body will contain all users
+ */
+export async function getUsers(req: Request, res: Response) {
+	try {
+		const users = await prisma.user.findMany({
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				admin: true
+			}
+		})
+		return res.status(200).send({ type: "success", data: users })
+	} catch (error: any) {
+		console.error(error)
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
+	}
+}
+
+/**
  * Route handler to login a user with the token: /api/v1/user
  * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
  * @param res Response body will contain the user information
@@ -90,6 +112,50 @@ export async function createUser(req: Request, res: Response) {
 	} catch (error: any) {
 		console.error(error)
 		if (error.code === "P2002") return res.status(400).send({ type: "error", error: "User already exists" })
+		return res.status(500).send({ type: "error", error: "Internal error!" })
+	}
+}
+
+/**
+ * Route handler that update the admin state of a user: /api/v1/user/:id/admin
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme and body must contain admin field
+ * @param res Response body will contain the updated user
+ */
+export async function updateAdmin(req: Request, res: Response) {
+	if (!req.body) return res.status(400).send({ type: "error", error: "No request body" })
+	if (req.body.admin === null || req.params.id === null) return res.status(400).send({ type: "error", error: "Missing fields" })
+	if (req.body.admin !== 0 && req.body.admin !== 1) return res.status(400).send({ type: "error", error: "Invalid admin value" })
+
+	try {
+		const user = await prisma.user.findUnique({
+			where: {
+				id: req.params.id
+			},
+			select: {
+				admin: true
+			}
+		})
+
+		if (!user) return res.status(400).send({ type: "error", error: "User does not exist!" })
+		if (user.admin === 2) return res.status(400).send({ type: "error", error: "User is owner, cannot change role!" })
+
+		const newUser = await prisma.user.update({
+			where: {
+				id: req.params.id
+			},
+			data: {
+				admin: req.body.admin
+			},
+			select: {
+				id: true,
+				name: true,
+				email: true,
+				admin: true
+			}
+		})
+		return res.status(200).send({ type: "success", data: newUser })
+	} catch (error: unknown) {
+		console.error(error)
 		return res.status(500).send({ type: "error", error: "Internal error!" })
 	}
 }
