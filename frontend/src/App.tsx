@@ -4,6 +4,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Header from "./components/Header"
 import Home from "./pages/Home"
+import SuperAdmin from "./pages/SuperAdmin"
 import { useEffect, useState } from "react"
 import useToken from "./hooks/useToken"
 import WebSocketInterface from "./pages/WebSocketInterface"
@@ -49,6 +50,7 @@ function App() {
 					admin: data.data.admin
 				})
 				if (location.pathname === "/login" || location.pathname === "/register") navigate("/")
+				if (location.pathname === "/admin" && !user.admin) navigate("/")
 				return
 			}
 			setUser({ id: "", name: "", email: "", admin: 0 })
@@ -91,6 +93,7 @@ function App() {
 				<Route path="/register" element={<Register {...props} />} />
 				<Route path="/web-client" element={<WebSocketInterface {...props} socketport={4001} />} />
 				<Route path="*" element={<Page404 />} />
+				<Route path="/superadmin" element={<SuperAdmin {...props} />} />
 				</Routes>
 			</div>
 		</>
