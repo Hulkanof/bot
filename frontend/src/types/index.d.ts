@@ -21,7 +21,7 @@ interface User {
 	id: string
 	name: string
 	email: string
-	admin: number
+	admin: 0 | 1 | 2
 }
 
 interface Bot {
