@@ -136,8 +136,8 @@ export async function updateAdmin(req: Request, res: Response) {
 			}
 		})
 
-		if (!user) return res.status(400).send({ type: "error", error: "User does not exist!" })
-		if (user.admin === 2) return res.status(400).send({ type: "error", error: "User is owner, cannot change role!" })
+		if (!user) return res.status(404).send({ type: "error", error: "User does not exist!" })
+		if (user.admin === 2) return res.status(403).send({ type: "error", error: "User is owner, cannot change role!" })
 
 		const newUser = await prisma.user.update({
 			where: {
