@@ -1,6 +1,6 @@
 import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService } from "../api/bots"
 import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
-import { createUser, loginUser, getUser } from "../api/user"
+import { createUser, loginUser, getUser, getUsers, updateAdmin } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
 import type { Route } from "../types/express"
 import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
@@ -12,6 +12,13 @@ import { getServices, setService } from "../api/services"
  * Express routes
  */
 export const routes: Route[] = [
+	{
+		// Get all users
+		methods: ["get"],
+		path: "/api/v1/users",
+		middlewares: [],
+		handler: getUsers
+	},
 	// ------------------ user Routes ------------------
 	{
 		// Get user data from JWT token
@@ -30,6 +37,13 @@ export const routes: Route[] = [
 		methods: ["post"],
 		path: "/api/v1/user/login",
 		handler: loginUser
+	},
+	{
+		// Change admin state of user
+		methods: ["put"],
+		path: "/api/v1/user/:id/admin",
+		middlewares: [verifyTokenAdmin],
+		handler: updateAdmin
 	},
 	// ------------------ bot Routes ------------------
 	{
