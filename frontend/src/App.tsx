@@ -10,7 +10,7 @@ import WebSocketInterface from "./pages/WebSocketInterface"
 import Page404 from "./pages/404"
 import { useNavigate, useLocation } from "react-router-dom"
 import {SideBarMenuItem} from "./types/SideBarMenu"
-import {FcAdvertising} from "react-icons/fc"
+import {FcManager, FcSupport, FcVoicePresentation} from "react-icons/fc"
 import { SideBarMenu } from "./components/SideBarMenu"
 
 function App() {
@@ -62,10 +62,22 @@ function App() {
 	const items: SideBarMenuItem[] = [
 		{
 			id: "1",
-			label: "Home",
-			icon : FcAdvertising,
-			url : "/"
+			label: "SuperAdmin panel",
+			icon : FcSupport,
+			url : "/superadmin"
 		},
+		{
+			id: "2",
+			label: "Admin panel",
+			icon : FcManager,
+			url : "/admin"
+		},
+		{
+			id: "3",
+			label: "Bot panel",
+			icon : FcVoicePresentation,
+			url : "/web-client"
+		}
 	];
 
 	return (
