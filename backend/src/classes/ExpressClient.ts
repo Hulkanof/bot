@@ -23,6 +23,8 @@ export default class ExpressClient {
 	 */
 	private port: number
 
+	private botName: string | null = null
+
 	/**
 	 * Array of used ports
 	 */
@@ -34,7 +36,7 @@ export default class ExpressClient {
 	 * @param port Port to run the server on
 	 * @param start Whether to start the server or not (default: false)
 	 */
-	constructor(routes: Route[], port: number, start: boolean = false) {
+	constructor(routes: Route[], port: number, options?: { start?: boolean; botName?: string }) {
 		this.port = port
 		this.app = express()
 		this.app.use(express.json())
@@ -51,16 +53,17 @@ export default class ExpressClient {
 
 		ExpressClient.usedPorts.push(port)
 
-		if (start) this.start()
+		if (options?.botName) this.botName = options.botName
+		if (options?.start) this.start()
 	}
 
 	/**
 	 * Starts the server
 	 */
 	public start() {
-		if (this.server) throw new Error("Server already started")
+		if (this.server) throw new Error("[ApiClient] Server already started")
 		this.server = this.app.listen(this.port, () => {
-			console.log(`API server running on port ${this.port}`)
+			console.log(`[ApiClient${this.botName !== null ? ` - ${this.botName}` : ""}] API server running on port ${this.port}`)
 		})
 	}
 
@@ -69,10 +72,10 @@ export default class ExpressClient {
 	 * @param server http server to start the server for
 	 */
 	public startWithServer(server: Server) {
-		if (this.server) throw new Error("Server already started")
+		if (this.server) throw new Error(`[ApiClient${this.botName !== null ? ` - ${this.botName}` : ""}] Server already started`)
 		this.server = server
 		this.server.listen(this.port, () => {
-			console.log(`Server running on port ${this.port}`)
+			console.log(`[ApiClient${this.botName !== null ? ` - ${this.botName}` : ""}] Server running on port ${this.port}`)
 		})
 	}
 
@@ -104,7 +107,7 @@ export default class ExpressClient {
 		if (this.server) {
 			this.server.close(error => {
 				if (error) console.error(error)
-				console.log(`Server on port ${this.port} closed`)
+				console.log(`[ApiClient${this.botName !== null ? ` - ${this.botName}` : ""}] Server on port ${this.port} closed`)
 			})
 		}
 	}

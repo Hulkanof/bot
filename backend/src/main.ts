@@ -105,7 +105,7 @@ function changeSlackBot() {
 }
 
 // Express Client
-const expressClient = new ExpressClient(routes, 4000, true)
+const expressClient = new ExpressClient(routes, 4000, { start: true })
 createChatBots()
 
 function setBotsReady(ready: boolean) {
