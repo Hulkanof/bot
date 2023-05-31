@@ -1,5 +1,5 @@
 import type { Request, Response } from "express"
-import { environment, changeDiscordBot } from "../main"
+import { environment, changeDiscordBot, changeSlackBot, discordBot, slackBot } from "../main"
 import fs from "fs"
 import path from "path"
 
@@ -26,6 +26,7 @@ export async function setService(req: Request, res: Response) {
 	try {
 		switch (name) {
 			case "discord":
+				if (!discordBot?.isReady()) return res.status(400).send({ type: "error", error: "Discord bot not ready" })
 				const discordPath = path.join(__dirname, "../config/discord.json")
 				const buffer = fs.readFileSync(discordPath)
 				const discordConfig = JSON.parse(buffer.toString())
@@ -49,7 +50,26 @@ export async function setService(req: Request, res: Response) {
 			case "mastodon":
 				break
 			case "slack":
-				break
+				if (!slackBot?.isReady()) return res.status(400).send({ type: "error", error: "Slack bot not ready" })
+				const slackPath = path.join(__dirname, "../config/discord.json")
+				const slackBuffer = fs.readFileSync(slackPath)
+				const slackConfig = JSON.parse(slackBuffer.toString())
+
+				fs.writeFileSync(
+					slackPath,
+					JSON.stringify({
+						token: data.token ? data.token : slackConfig.token,
+						secret: data.secret ? data.secret : slackConfig.secret,
+						appToken: data.appToken ? data.appToken : slackConfig.appToken
+					})
+				)
+
+				changeSlackBot()
+
+				return res.status(200).send({
+					type: "success",
+					message: "Slack config updated"
+				})
 			default:
 				return res.status(404).send({ type: "error", error: "Service not found" })
 		}

@@ -99,7 +99,7 @@ export default class ChatBot {
 		while (ExpressClient.usedPorts.includes(port)) port++
 
 		// create the express client and the web socket server
-		this.expressClient = new ExpressClient([], port)
+		this.expressClient = new ExpressClient([], port, { botName: this.name })
 		const server = http.createServer(this.expressClient.getApp())
 		this.wss = new WebSocketServer({ server })
 
@@ -134,7 +134,7 @@ export default class ChatBot {
 				if (index === -1) return ws.send("Internal Server Error")
 
 				const name = _this.socketClients[index].name
-				console.log(`-- User ${name} disconnected from chatBot ${_this.name}`)
+				console.log(`[ChatBot - ${_this.name}] -- User ${name} disconnected from chatBot ${_this.name}`)
 				_this.socketClients.splice(index, 1)
 			})
 		})
@@ -148,11 +148,11 @@ export default class ChatBot {
 		if (!client.name) return client.ws.send("Please give your name (/name <name>)")
 		const username = client.name
 
-		console.log(`++ ${this.name} received from ${username}: ${data}`)
+		console.log(`[ChatBot - ${this.name}] ++ ${this.name} received from ${username}: ${data}`)
 
 		// process the message with rivestcript and send the response back to the client
 		this.rivescriptBot.reply(username, data.toString()).then(reply => {
-			console.log(`-- ${this.name} sent to ${username}: ${reply}`)
+			console.log(`[ChatBot - ${this.name}] -- ${this.name} sent to ${username}: ${reply}`)
 			client.ws.send(reply)
 
 			if (!ChatBot.conversations) ChatBot.conversations = {}
@@ -172,17 +172,17 @@ export default class ChatBot {
 	 */
 	public async getBrain() {
 		try {
-			if (!this.brain) throw new Error("Brain not set")
+			if (!this.brain) throw new Error(`[ChatBot - ${this.name}] Brain not set`)
 			const brain = await prisma.brains.findUnique({
 				where: {
 					name: this.brain
 				}
 			})
-			if (!brain) throw new Error("Brain not found")
+			if (!brain) throw new Error(`[ChatBot - ${this.name}] Brain not found`)
 			return brain
 		} catch (error) {
 			console.error(error)
-			throw new Error("Internal Server Error")
+			throw new Error(`[ChatBot - ${this.name}] Internal Server Error`)
 		}
 	}
 
@@ -196,17 +196,17 @@ export default class ChatBot {
 				name: name
 			}
 		})
-		if (!brain) throw new Error("Brain not found")
+		if (!brain) throw new Error(`[ChatBot - ${this.name}] Brain not found`)
 
 		if (!this.rivescriptBot.stream(brain.data, error => console.log(error))) {
-			throw new Error("Brain could not be set")
+			throw new Error(`[ChatBot - ${this.name}] Brain could not be set`)
 		}
 
 		// sort replies after loading
 		this.rivescriptBot.sortReplies()
 
 		this.brain = name
-		console.log(`Brain of ${this.name} set to ${name}`)
+		console.log(`[ChatBot - ${this.name}] Brain set to "${name}"`)
 		return brain
 	}
 
