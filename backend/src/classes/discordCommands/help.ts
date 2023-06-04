@@ -2,6 +2,11 @@ import { Colors, EmbedBuilder, Message } from "discord.js"
 import { ICommand } from "../../types/discord"
 import DiscordBot from "../DiscordBot"
 
+/**
+ * Help command
+ * @param client Discord bot client
+ * @returns Command
+ */
 export default function help(client: DiscordBot): ICommand {
 	return {
 		name: "help",

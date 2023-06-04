@@ -13,7 +13,7 @@ export default async function changeBotServices(token: string, botId: string, se
 			Authorization: `Bearer ${token}`,
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(services)
+		body: JSON.stringify({services: services})
 	})
 
 	const data: BasicAPIResponse<ServiceAccess> = await response.json()

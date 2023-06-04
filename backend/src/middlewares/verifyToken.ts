@@ -2,6 +2,12 @@ import { NextFunction, Request, Response } from "express"
 import { verifyAccessToken } from "../utils/token"
 import { JsonWebTokenError } from "jsonwebtoken"
 
+/**
+ * Express Middleware Verify if the token is valid
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ */
 export async function verifyToken(req: Request, res: Response, next: NextFunction) {
 	try {
 		if (!req.headers.authorization) return res.status(401).send({ type: "error", error: "Not Authorized" })

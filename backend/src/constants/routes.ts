@@ -1,4 +1,4 @@
-import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService } from "../api/bots"
+import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService, updateBotName } from "../api/bots"
 import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
 import { createUser, loginUser, getUser, getUsers, updateAdmin } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
@@ -7,6 +7,7 @@ import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
 import { getBotbrain, setBotBrain } from "../api/bots"
 import { getBotServices, setBotServices } from "../api/bots"
 import { getServices, setService } from "../api/services"
+import multer from "multer"
 
 /**
  * Express routes
@@ -75,6 +76,13 @@ export const routes: Route[] = [
 		handler: deleteBot
 	},
 	{
+		// Modify a bots name
+		methods: ["patch"],
+		path: "/api/v1/bots/:id/name/:name",
+		middlewares: [verifyTokenAdmin],
+		handler: updateBotName
+	},
+	{
 		// Get the brain of a bot
 		methods: ["get"],
 		path: "/api/v1/bots/:id/brain",
@@ -117,7 +125,7 @@ export const routes: Route[] = [
 		handler: getChatForUser
 	},
 	{
-		// Get the chats of a person with a bot
+		// Get the chats of a person with a bot on a service
 		methods: ["get"],
 		path: "/api/v1/bots/:id/chats/:author/:service",
 		middlewares: [verifyTokenAdmin],
@@ -142,7 +150,7 @@ export const routes: Route[] = [
 		// Add a new brain
 		methods: ["post"],
 		path: "/api/v1/brains/create/:name",
-		middlewares: [verifyTokenAdmin],
+		middlewares: [multer().single("files"), verifyTokenAdmin],
 		handler: createBrain
 	},
 	{

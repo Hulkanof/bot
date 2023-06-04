@@ -1,22 +1,20 @@
 import React, { useEffect } from "react"
 import useWebSocket from "react-use-websocket"
+import { useParams } from "react-router-dom"
 import "../styles/messageBox.css"
-
-interface props extends defaultPageProps {
-	socketport: number
-}
 
 interface messageObject {
 	name: string
 	message: string
 }
 
-const WebSocketInterface: React.FC<props> = ({ socketport, user }) => {
+const WebSocketInterface: React.FC<defaultPageProps> = ({ user }) => {
+	const { socketPort } = useParams<{ socketPort: string }>()
 	const [message, setMessage] = React.useState("")
 	const [recievedMessages, setRecievedMessages] = React.useState<messageObject[]>([])
 	const bottomRef = React.useRef<HTMLDivElement>(null)
 
-	const { sendMessage, readyState } = useWebSocket(`ws://localhost:${socketport}?name=${user.name}`, {
+	const { sendMessage, readyState } = useWebSocket(`ws://localhost:${socketPort}?name=${user.name}`, {
 		onOpen: () => console.log("Connected"),
 		shouldReconnect: () => true,
 		onMessage: e => {

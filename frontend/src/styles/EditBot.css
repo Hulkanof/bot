@@ -1,0 +1,190 @@
+body {
+	width: 100%;
+	display: grid;
+	background-color: #121212;
+	color: "#ffffff";
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	z-index: 2;
+}
+
+.main-edit {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+    border: 2px solid;
+    border-color: #77529e;
+    border-radius: 0.5rem;
+}
+
+.bot-name-edit {
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.bot-name-title {
+    width: 50%;
+}
+
+.bot-name-input {
+    width: 100%;
+    font-size: large;
+    border: none;
+    border-bottom: 1px solid #2d2d2d;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.bot-name-input:focus {
+    outline: none;
+    border-bottom-color: #bb86fc;
+}
+
+.bot-name-button {
+    width: 4rem;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	background-color: #77529e;
+	align-content: center;
+	border-radius: 1rem;
+}
+
+.bot-brain {
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.bot-brain-title {
+    width: 50%;
+}
+
+.bot-brain-select {
+    width: 100%;
+    font-size: large;
+    border: none;
+    border-bottom: 1px solid #2d2d2d;
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.bot-brain-select:focus {
+    outline: none;
+    border-bottom-color: #bb86fc;
+}
+
+.bot-brain-button {
+    width: 4rem;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	background-color: #77529e;
+	align-content: center;
+	border-radius: 1rem;
+}
+
+.bot-brain-button:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+.bot-services{
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.bot-services-title {
+    width: 100%;
+    font-size: large;
+}
+
+.bot-services-socket {
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+
+.bot-services-socket-button {
+    width: 4rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}  
+
+.bot-services-socket-button:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+.bot-services-discord {
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+
+.bot-services-discord-button {
+    width: 4rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}  
+
+.bot-services-discord-button:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+
+.bot-services-slack {
+    width: 100%;
+    overflow-x: wrap;
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+
+.bot-services-slack-button {
+    width: 4rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}   
+
+.bot-services-slack-button:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}

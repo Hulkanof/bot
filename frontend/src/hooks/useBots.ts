@@ -1,13 +1,18 @@
 import { UseQueryResult, useQuery } from "@tanstack/react-query"
 import getBots from "../functions/bots/getBots"
 
-const useBrains = (token: string): UseQueryResult<Bot[], Error> => {
+/**
+ * Hook to get all bots
+ * @param token The token of the user
+ * @returns The bots
+ */
+const useBots = (token: string): UseQueryResult<Bot[], Error> => {
 	return useQuery({
-		queryKey: ["bots", token],
+		queryKey: ["bots", "all"],
 		queryFn: () => getBots(token),
 		cacheTime: 1000 * 60 * 5,
 		enabled: !!token && token !== ""
 	})
 }
 
-export default useBrains
+export default useBots

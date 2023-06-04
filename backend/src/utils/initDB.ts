@@ -1,6 +1,9 @@
 import { prisma } from "../main"
 import defaultBrain from "../constants/defaultBrain"
 
+/**
+ * Initialize the database with default values
+ */
 export default async function initDB() {
 	// Create default brain if it doesn't exist
 	const currentdefaultBrain = await prisma.brains.findUnique({

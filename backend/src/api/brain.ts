@@ -52,11 +52,16 @@ export async function getBrain(req: Request, res: Response) {
 export async function createBrain(req: Request, res: Response) {
 	try {
 		const name = req.params.name
-		const data = req.body.data
+		const file = req.file
+
+		if (!file || !name) return res.status(400).send({ type: "error", error: "Missing Body" })
+
+		const content = file.buffer.toString("utf-8")
+
 		const brain = await prisma.brains.create({
 			data: {
 				name,
-				data
+				data: content
 			}
 		})
 
@@ -69,6 +74,7 @@ export async function createBrain(req: Request, res: Response) {
 		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
 }
+
 
 /**
  * Route handler to delete a brain: /api/v1/brains/delete/:id

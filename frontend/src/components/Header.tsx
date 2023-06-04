@@ -15,7 +15,7 @@ const Header: React.FC<defaultPageProps> = ({ user, setUser }) => {
 
 	return (
 		<div className="header">
-			<div className="header-title">Projet</div>
+			<div className="header-title">The Pipe Bot Project</div>
 			{user.id !== "" ? (
 				<div className="header-nav">
 					<div className="header-username">{user.name}</div>

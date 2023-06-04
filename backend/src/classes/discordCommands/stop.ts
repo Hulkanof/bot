@@ -2,6 +2,11 @@ import { Message } from "discord.js"
 import { ICommand } from "../../types/discord"
 import DiscordBot from "../DiscordBot"
 
+/**
+ * Stops the chats
+ * @param client DiscordBot
+ * @returns ICommand
+ */
 export default function stop(client: DiscordBot): ICommand {
 	return {
 		name: "stop",

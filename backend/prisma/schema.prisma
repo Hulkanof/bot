@@ -35,4 +35,5 @@ type ServiceAccess {
   discord   Boolean
   mastodon  Boolean
   slack     Boolean
+  socket    Boolean
 }

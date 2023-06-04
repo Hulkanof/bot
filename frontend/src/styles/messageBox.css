@@ -2,6 +2,7 @@
 	display: grid;
 	height: calc(100vh - 5rem);
 	place-items: center;
+	width: 100%;
 }
 
 .message-box-container {

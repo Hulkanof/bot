@@ -1,0 +1,236 @@
+body {
+	width: 100%;
+	display: grid;
+	background-color: #121212;
+	color: "#ffffff";
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	z-index: 2;
+}
+
+.main-admin{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    overflow-x: wrap;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+}
+
+.Discord {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+    border: 2px solid;
+    border-color: #77529e;
+    border-radius: 0.5rem;
+}
+
+.Discord-token {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.Discord-token:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.Discord-clientId {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.Discord-clientId:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.Discord-clientSecret {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.Discord-clientSecret:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.Discord-update {
+	width: 4rem;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	background-color: #77529e;
+	align-content: center;
+	border-radius: 1rem;
+}
+
+.Discord-update:hover {
+	background-color: #bb86fc;
+	cursor: pointer;
+}
+
+.Slack {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+    border: 2px solid;
+    border-color: #77529e;
+    border-radius: 0.5rem;
+}
+
+.Slack-token {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.Slack-token:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.signingSecret {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.signingSecret:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.appToken {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.appToken:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.Slack-update {
+    width: 4rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}
+
+.Slack-update:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+.add-bot {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+    border: 2px solid;
+    border-color: #77529e;
+    border-radius: 0.5rem;
+}
+
+.bot-input {
+    font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.bot-input:focus {
+    outline: none;
+    border-bottom-color: #bb86fc;
+}
+
+.bot-add {
+    width: 3rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}
+
+.bot-add:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+.brain{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    z-index: 1;
+    border: 2px solid;
+    border-color: #77529e;
+    border-radius: 0.5rem;
+}
+
+.brain-add {
+    width: 3rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    background-color: #77529e;
+    align-content: center;
+    border-radius: 1rem;
+}
+
+.brain-add:hover {
+    background-color: #bb86fc;
+    cursor: pointer;
+}
+
+
+

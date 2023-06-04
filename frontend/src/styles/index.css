@@ -11,11 +11,13 @@
 
 body {
 	width: 100%;
+	display: flex;
 	background-color: #121212;
 	color: "#ffffff";
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
+	z-index: 2;
 }
 
 #root {
@@ -56,4 +58,15 @@ body {
 *::-webkit-scrollbar-thumb {
 	background-color: grey;
 	border-radius: 20px;
+}
+
+.main-home {
+	width: fit-content;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	z-index: 1;
+	border: 2px solid #77529e;
+	border-radius: 0.5rem;
 }
