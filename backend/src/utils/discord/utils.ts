@@ -2,6 +2,12 @@ import { Message } from "discord.js"
 import { IChat } from "../../types/discord"
 import ChatBot from "../../classes/ChatBot"
 
+/**
+ * Handler for discord chat messages to the bot
+ * @param chats Map of chats
+ * @param message Message object
+ * @param chat Chat object
+ */
 export async function handlePrivateChat(chats: Map<string, IChat[]>, message: Message, chat: IChat) {
 	if (message.content === "!stop") {
 		message.channel.delete()

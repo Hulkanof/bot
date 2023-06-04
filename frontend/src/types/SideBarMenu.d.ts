@@ -5,5 +5,5 @@ export interface SideBarMenuItem {
 	label: string
 	icon: IconType
 	url: string
-	privilegeNeeded: string
+	privilegeNeeded: 0 | 1 | 2
 }

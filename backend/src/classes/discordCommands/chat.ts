@@ -3,6 +3,11 @@ import { ICommand } from "../../types/discord"
 import DiscordBot from "../DiscordBot"
 import ChatBot from "../ChatBot"
 
+/**
+ * Chat command
+ * @param client Discord bot client
+ * @returns Command
+ */
 export default function chat(client: DiscordBot): ICommand {
 	return {
 		name: "chat",

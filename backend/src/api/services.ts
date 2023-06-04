@@ -3,6 +3,11 @@ import { environment, changeDiscordBot, changeSlackBot, discordBot, slackBot } f
 import fs from "fs"
 import path from "path"
 
+/**
+ * Route to get the services available: /api/services
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the available services
+ */
 export async function getServices(_req: Request, res: Response) {
 	const availableServices = {
 		discord: environment.discordConfigOK,
@@ -16,6 +21,11 @@ export async function getServices(_req: Request, res: Response) {
 	})
 }
 
+/**
+ * Route to get a specific service: /api/services/:name
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain the service data
+ */
 export async function setService(req: Request, res: Response) {
 	const name = req.params.name
 	const data = req.body

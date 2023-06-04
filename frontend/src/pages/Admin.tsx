@@ -4,7 +4,13 @@ import useBrains from "../hooks/useBrains"
 import changeServiceConfig from "../functions/services/changeServiceConfig"
 import createBot from "../functions/bots/createBot"
 import createBrain from "../functions/brains/createBrain"
+import "../styles/Admin.css"
 
+/**
+ * Admin page
+ * @param props 
+ * @returns 
+ */
 const Admin: React.FC<defaultPageProps> = props => {
 	const { user, token } = props
 	const { data, isLoading, error } = useBrains(token)
@@ -20,21 +26,34 @@ const Admin: React.FC<defaultPageProps> = props => {
 	if (error) return <div>Error: {error.message}</div>
 	if (isLoading) return <div>Loading...</div>
 	if (!data) return <div>Users fetch failed</div>
-
+	/**
+	 * Edit the discord configuration on the server
+	 */
 	function handleDiscord() {
 		const serviceConfig: ServiceConfig = { type: "discord", token: discordToken, clientId: discordClientId, clientSecret: discordClientSecret }
 		changeServiceConfig(token, "discord", serviceConfig).catch(err => console.log(err))
 	}
 
+	/**
+	 * Edit the slack configuration on the server
+	 */
 	function handleSlack() {
 		const serviceConfig: ServiceConfig = { type: "slack", signingSecret: slackSigningSecret, token: slackToken, appToken: slackAppToken }
 		changeServiceConfig(token, "slack", serviceConfig).catch(err => console.log(err))
 	}
 
+	/**
+	 * Create a new bot on the server
+	 * @param name
+	 */
 	function handleAdd(name: string) {
 		createBot(token, name).catch(err => console.log(err))
 	}
 
+	/**
+	 * Add a new brain on the server
+	 * Handle the file upload
+	 */
 	function handleAddBrain() {
 		if (newBrainFiles) {
 			const file = newBrainFiles[0]
@@ -49,10 +68,13 @@ const Admin: React.FC<defaultPageProps> = props => {
 
 	if (user.admin < 1) return <div>Not authorized</div>
 	else {
+		/**
+		 * Display the admin panel
+		 */
 		return (
 			<div>
 				<h1>Welcome to the Admin panel</h1>
-				<div className="main">
+				<div className="main-admin">
 					<div className="Discord">
 						<h2>Here you can manage the Discord configuration</h2>
 						<input className="Discord-token" type="text" placeholder="Discord token" onChange={e => setDiscordToken(e.target.value)} />
@@ -98,7 +120,6 @@ const Admin: React.FC<defaultPageProps> = props => {
 
 					<div className="brain">
 						<h2>Here you can add a brain</h2>
-						<input className="brain-input" type="text" placeholder="Name" onChange={e => setName(e.target.value)} />
 						<input className="brain-input" type="file" placeholder="Content" onChange={e => setNewBrainFiles(e.target.files)} />
 						<button className="brain-add" onClick={() => handleAddBrain()}>
 							Add

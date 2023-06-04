@@ -3,6 +3,12 @@ import { verifyAccessToken } from "../utils/token"
 import { JsonWebTokenError } from "jsonwebtoken"
 import { prisma } from "../main"
 
+/**
+ * Middleware to verify if the user is an admin
+ * @param req Request
+ * @param res Response
+ * @param next NextFunction
+ */
 export async function verifyTokenAdmin(req: Request, res: Response, next: NextFunction) {
 	try {
 		if (!req.headers.authorization) return res.status(401).send({ error: "Not Authorized" })

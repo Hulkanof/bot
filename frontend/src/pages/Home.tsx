@@ -1,35 +1,16 @@
 import React from "react"
-import useBots from "../hooks/useBots"
 
-const Home: React.FC<defaultPageProps> = props => {
-	const { user, token } = props
-	const { data: bots, isLoading, error } = useBots(token)
-
-	if (isLoading) return <div>Loading...</div>
-	if (error) return <div>Error: {error.message}</div>
-
+const Home: React.FC<defaultPageProps> = () => {
 	return (
-		<div>
-			<h1>Welcome!</h1>
-			<div>
-				<h2>User</h2>
-				<p>ID: {user.id}</p>
-				<p>Name: {user.name}</p>
-				<p>Email: {user.email}</p>
-				<p>Admin: {user.admin}</p>
-			</div>
-			<div>
-				<h2>Bots</h2>
-				<ul>
-					{bots?.map((bot, index) => (
-						<li key={index}>
-							<h3>{bot.name}</h3>
-							<p>id: {bot.id}</p>
-							<p>brain: {bot.brain.name}</p>
-						</li>
-					))}
-				</ul>
-			</div>
+		<div className="main-home">
+
+			<h1>Welcome to the Pipe Bot Project!</h1>
+			<h2>This website was made for the webservice module at ENSSAT.</h2>
+			<h2>It was made with React and using TypeScript which is a typed language based on JavaScript.</h2>
+			<h2>The backend works with Express and MongoDB</h2>
+			<h2>It allows you to have a discussion with bots as much as you want.</h2>
+			<h2>Feel free to explore the site and to enjoy it.</h2>
+			
 		</div>
 	)
 }

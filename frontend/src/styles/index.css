@@ -59,3 +59,14 @@ body {
 	background-color: grey;
 	border-radius: 20px;
 }
+
+.main-home {
+	width: fit-content;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	padding: 2rem;
+	z-index: 1;
+	border: 2px solid #77529e;
+	border-radius: 0.5rem;
+}

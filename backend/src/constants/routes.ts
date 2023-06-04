@@ -125,7 +125,7 @@ export const routes: Route[] = [
 		handler: getChatForUser
 	},
 	{
-		// Get the chats of a person with a bot
+		// Get the chats of a person with a bot on a service
 		methods: ["get"],
 		path: "/api/v1/bots/:id/chats/:author/:service",
 		middlewares: [verifyTokenAdmin],

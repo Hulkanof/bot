@@ -3,6 +3,11 @@ import SlackClient from "../SlackClient"
 import ChatBot from "../ChatBot"
 import { text } from "stream/consumers"
 
+/**
+ * Chat command
+ * @param client Slack client
+ * @returns Chat command
+ */
 export default function chat(client: SlackClient) {
 	return {
 		name: "/chat",

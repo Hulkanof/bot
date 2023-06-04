@@ -1,6 +1,9 @@
 import ChatBot from "../classes/ChatBot"
 import { prisma, setBotsReady } from "../main"
 
+/**
+ * Create all bots found in the database
+ */
 export default async function createChatBots() {
 	// Create bots found in the database
 	const dBbots = await prisma.bots.findMany()

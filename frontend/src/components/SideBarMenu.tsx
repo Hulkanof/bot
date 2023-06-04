@@ -5,11 +5,22 @@ import { VscMenu } from "react-icons/vsc"
 import SideBarMenuItemView from "./SideBarMenuItemView"
 import "../styles/SideBarMenu.scss"
 
-interface SideBarMenuProps {
+/**
+ * Props for the SideBarMenu component
+ * @param items
+ * @param user
+ */
+type SideBarMenuProps = {
 	items: SideBarMenuItem[]
+	user: User
 }
 
-export function SideBarMenu({ items }: SideBarMenuProps) {
+/**
+ * Display the sidebar menu
+ * @param items
+ * @param user
+ */
+const SideBarMenu: React.FC<SideBarMenuProps> = ({ items, user }) => {
 	const [isOpen, setIsOpen] = useState<boolean>(false)
 
 	function handleClick() {
@@ -22,9 +33,9 @@ export function SideBarMenu({ items }: SideBarMenuProps) {
 					<VscMenu />
 				</button>
 			</div>
-			{items.map(item => (
-				<SideBarMenuItemView key={item.id} item={item} isOpen={isOpen} />
-			))}
+			{items.map(item => (item.privilegeNeeded <= user.admin ? <SideBarMenuItemView key={item.id} item={item} isOpen={isOpen} /> : <></>))}
 		</div>
 	)
 }
+
+export default SideBarMenu

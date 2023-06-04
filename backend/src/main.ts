@@ -75,6 +75,9 @@ if (slackConfigOK) {
 	}
 }
 
+/**
+ * Change Discord Bot and restarts it
+ */
 function changeDiscordBot() {
 	const discordPath = path.join(__dirname, "./config/discord.json")
 	const buffer = fs.readFileSync(discordPath)
@@ -99,6 +102,9 @@ function changeDiscordBot() {
 	}
 }
 
+/**
+ * Change Slack Bot and restarts it
+ */
 function changeSlackBot() {
 	const slackPath = path.join(__dirname, "./config/slack.json")
 	const buffer = fs.readFileSync(slackPath)
@@ -149,6 +155,6 @@ process.on("SIGINT", async () => {
 
 process.on("unhandledRejection", error => {
 	console.log("unhandledRejection", error)
-});
+})
 
 export { discordBot, slackBot, botsReady, expressClient, prisma, environment, changeDiscordBot, changeSlackBot, setBotsReady }

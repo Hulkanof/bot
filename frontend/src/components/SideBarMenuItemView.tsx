@@ -3,11 +3,21 @@ import { SideBarMenuItem } from "../types/SideBarMenu"
 import { classNames } from "../classes/SideBarMenu"
 import "../styles/SideBarMenuItemView.scss"
 
+/**
+ * Props for SideBarMenuItemView
+ * @param item
+ * @param isOpen
+ */
 interface SideBarMenuItemProps {
 	item: SideBarMenuItem
 	isOpen: boolean
 }
 
+/**
+ * Display a menu item
+ * @param item
+ * @param isOpen
+ */
 export default function SideBarMenuItemView({ item, isOpen }: SideBarMenuItemProps) {
 	return (
 		<div className="SideBarMenuItem">

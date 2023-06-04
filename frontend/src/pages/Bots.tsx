@@ -3,7 +3,12 @@ import { useState } from "react"
 import useBots from "../hooks/useBots"
 import "../styles/Bots.css"
 import { useNavigate } from "react-router-dom"
+import { GoPerson } from "react-icons/go"
 
+/**
+ * Bot page
+ * @param props
+ */
 const Bot: React.FC<defaultPageProps> = props => {
 	const { user, token } = props
 	const { data, isLoading, error } = useBots(token)
@@ -16,15 +21,26 @@ const Bot: React.FC<defaultPageProps> = props => {
 
 	const filterData = data.filter(bot => bot.name.toLowerCase().includes(search.toLowerCase()))
 
+	/**
+	 * Bring the user to the bot page
+	 * @param id
+	 */
 	function handleTalk(id: string) {
 		const bot = filterData.find(bot => bot.id === id)
 		navigate("/web-client/" + bot?.socketPort)
 	}
 
+	/**
+	 * Bring the user to the edit bot page
+	 * @param id
+	 */
 	function handleUpdate(id: string) {
 		navigate("/editbot/" + id)
 	}
 
+	/**
+	 * Display the bot page
+	 */
 	return (
 		<div>
 			<h1>Welcome to the bot panel</h1>
@@ -36,6 +52,9 @@ const Bot: React.FC<defaultPageProps> = props => {
 				<div className="bots">
 					{filterData.map((bot, index) => (
 						<div className="bot-card" key={index}>
+							<div className="bot-image">
+								<GoPerson size={50} />
+							</div>
 							{user.admin > 0 ? (
 								<>
 									<div className="bot-name">{bot.name}</div>

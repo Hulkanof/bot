@@ -5,9 +5,28 @@ import { botsReady, discordBot, expressClient } from "../main"
 import ChatBot from "./ChatBot"
 const BASEPORT = 3999 as const
 
+/**
+ * The slack client
+ */
 export default class SlackClient extends App {
+	/**
+	 * Whether the client is ready or not
+	 */
 	private ready: boolean = false
+
+	/**
+	 * The chats of the users
+	 */
 	public chats = new Map<string, IChat[]>()
+
+	/**
+	 * The express client
+	 * @param secret The secret of the slack app
+	 * @param token The token of the slack app
+	 * @param appToken The app token of the slack app
+	 * @param port The port of the slack client
+	 * @returns A new slack client
+	 */
 	constructor(secret: string, token: string, appToken: string, port?: number) {
 		super({
 			token,
@@ -24,6 +43,11 @@ export default class SlackClient extends App {
 		this.startApp(port)
 	}
 
+	/**
+	 * Starts the slack client
+	 * @param port The port of the slack client
+	 * @returns A promise
+	 */
 	private startApp(port?: number) {
 		this.start(port || BASEPORT)
 			.then(() => {
@@ -48,6 +72,9 @@ export default class SlackClient extends App {
 			})
 	}
 
+	/**
+	 * Initializes the commands
+	 */
 	private initCommands() {
 		const chatCmd = chat(this)
 		this.command(chatCmd.name, chatCmd.execute)
@@ -56,6 +83,9 @@ export default class SlackClient extends App {
 		})
 	}
 
+	/**
+	 * Initializes the listeners
+	 */
 	private initListeners() {
 		console.log("[SlackClient] Initializing listeners...")
 		this.message(async ({ message, say }) => {
@@ -107,11 +137,20 @@ export default class SlackClient extends App {
 		})
 	}
 
+	/**
+	 *
+	 * @returns Whether the client is ready or not
+	 */
 	public isReady() {
 		return this.ready
 	}
 }
 
+/**
+ * Checks if the message is a group chat message
+ * @param message The message to check
+ * @returns Whether the message is a group chat message or not
+ */
 function isGroupChatMessage(message: any): message is GenericMessageEvent {
 	if (message.subtype === "bot_message") return false
 	if (message.channel_type !== "group") return false

@@ -143,6 +143,11 @@ export default class ChatBot {
 		this.expressClient.startWithServer(server)
 	}
 
+	/**
+	 * Sets the brain of the chat bot
+	 * @param brain The name of the brain
+	 * @returns The brain
+	 */
 	private async handleReceivedMessage(data: Data, index: number) {
 		if (!this.expressClient) return console.log("Internal Server Error")
 		const client = this.socketClients[index]
@@ -211,6 +216,11 @@ export default class ChatBot {
 		return brain
 	}
 
+	/**
+	 * Gets the brain of the chat bot
+	 * @param name The name of the brain to set
+	 * @returns The brain of the chat bot
+	 */
 	public setName(newName: string) {
 		this.name = newName
 	}

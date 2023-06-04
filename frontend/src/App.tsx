@@ -12,7 +12,7 @@ import Page404 from "./pages/404"
 import { useNavigate, useLocation } from "react-router-dom"
 import { SideBarMenuItem } from "./types/SideBarMenu"
 import { FcManager, FcSupport, FcVoicePresentation } from "react-icons/fc"
-import { SideBarMenu } from "./components/SideBarMenu"
+import SideBarMenu from "./components/SideBarMenu"
 import Bot from "./pages/Bots"
 import Admin from "./pages/Admin"
 import EditBot from "./pages/EditBot"
@@ -69,21 +69,21 @@ function App() {
 			label: "SuperAdmin panel",
 			icon: FcSupport,
 			url: "/superadmin",
-			privilegeNeeded: "2"
+			privilegeNeeded: 2
 		},
 		{
 			id: "2",
 			label: "Admin panel",
 			icon: FcManager,
 			url: "/admin",
-			privilegeNeeded: "1"
+			privilegeNeeded: 1
 		},
 		{
 			id: "3",
 			label: "Bot panel",
 			icon: FcVoicePresentation,
 			url: "/bot",
-			privilegeNeeded: "0"
+			privilegeNeeded: 0
 		}
 	]
 
@@ -91,7 +91,7 @@ function App() {
 		<>
 			<Header {...props} />
 			<div className="App">
-				<SideBarMenu items={items} />
+				<SideBarMenu items={items} user={user} />
 				<Routes>
 					<Route path="/" element={<Home {...props} />} />
 					<Route path="/login" element={<Login {...props} />} />

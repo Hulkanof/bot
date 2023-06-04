@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react"
 
+/**
+ * Hook to get the token of the user
+ * @returns The token of the user
+ */ 
 const useToken = () => {
 	const [token, setToken] = useState<string>("")
 	const [isLoading, setIsLoading] = useState(true)
