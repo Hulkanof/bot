@@ -1,4 +1,4 @@
-interface defaultPageProps {
+type defaultPageProps = {
 	user: User
 	setUser: React.Dispatch<React.SetStateAction<User>>
 	token: string
@@ -43,6 +43,7 @@ interface ServiceAccess {
 	discord: boolean
 	mastodon: boolean
 	slack: boolean
+	socket: boolean
 }
 
 type AvailableServices = ServiceAccess
@@ -62,4 +63,7 @@ interface MastodonServiceConfig {
 
 interface SlackServiceConfig {
 	type: "slack"
+	signingSecret?: string
+	token?: string
+	appToken?: string
 }

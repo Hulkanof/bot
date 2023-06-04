@@ -10,9 +10,12 @@ import useToken from "./hooks/useToken"
 import WebSocketInterface from "./pages/WebSocketInterface"
 import Page404 from "./pages/404"
 import { useNavigate, useLocation } from "react-router-dom"
-import {SideBarMenuItem} from "./types/SideBarMenu"
-import {FcManager, FcSupport, FcVoicePresentation} from "react-icons/fc"
+import { SideBarMenuItem } from "./types/SideBarMenu"
+import { FcManager, FcSupport, FcVoicePresentation } from "react-icons/fc"
 import { SideBarMenu } from "./components/SideBarMenu"
+import Bot from "./pages/Bots"
+import Admin from "./pages/Admin"
+import EditBot from "./pages/EditBot"
 
 function App() {
 	const [user, setUser] = useState<User>({
@@ -50,7 +53,6 @@ function App() {
 					admin: data.data.admin
 				})
 				if (location.pathname === "/login" || location.pathname === "/register") navigate("/")
-				if (location.pathname === "/admin" && !user.admin) navigate("/")
 				return
 			}
 			setUser({ id: "", name: "", email: "", admin: 0 })
@@ -65,38 +67,41 @@ function App() {
 		{
 			id: "1",
 			label: "SuperAdmin panel",
-			icon : FcSupport,
-			url : "/superadmin",
-			privilegeNeeded : "2"
+			icon: FcSupport,
+			url: "/superadmin",
+			privilegeNeeded: "2"
 		},
 		{
 			id: "2",
 			label: "Admin panel",
-			icon : FcManager,
-			url : "/admin",
-			privilegeNeeded : "1"
+			icon: FcManager,
+			url: "/admin",
+			privilegeNeeded: "1"
 		},
 		{
 			id: "3",
 			label: "Bot panel",
-			icon : FcVoicePresentation,
-			url : "/web-client",
-			privilegeNeeded : "0"
+			icon: FcVoicePresentation,
+			url: "/bot",
+			privilegeNeeded: "0"
 		}
-	];
+	]
 
 	return (
 		<>
 			<Header {...props} />
 			<div className="App">
-				<SideBarMenu items={items}/>
+				<SideBarMenu items={items} />
 				<Routes>
-				<Route path="/" element={<Home {...props} />} />
-				<Route path="/login" element={<Login {...props} />} />
-				<Route path="/register" element={<Register {...props} />} />
-				<Route path="/web-client" element={<WebSocketInterface {...props} socketport={4001} />} />
-				<Route path="*" element={<Page404 />} />
-				<Route path="/superadmin" element={<SuperAdmin {...props} />} />
+					<Route path="/" element={<Home {...props} />} />
+					<Route path="/login" element={<Login {...props} />} />
+					<Route path="/register" element={<Register {...props} />} />
+					<Route path="/web-client/:socketPort" element={<WebSocketInterface {...props} />} />
+					<Route path="*" element={<Page404 />} />
+					<Route path="/superadmin" element={<SuperAdmin {...props} />} />
+					<Route path="/bot" element={<Bot {...props} />} />
+					<Route path="/admin" element={<Admin {...props} />} />
+					<Route path="/editbot/:Id" element={<EditBot {...props} />} />
 				</Routes>
 			</div>
 		</>

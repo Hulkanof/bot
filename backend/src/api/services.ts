@@ -26,7 +26,7 @@ export async function setService(req: Request, res: Response) {
 	try {
 		switch (name) {
 			case "discord":
-				if (!discordBot?.isReady()) return res.status(400).send({ type: "error", error: "Discord bot not ready" })
+				if (discordBot && !discordBot.isReady()) return res.status(400).send({ type: "error", error: "Discord bot not ready" })
 				const discordPath = path.join(__dirname, "../config/discord.json")
 				const buffer = fs.readFileSync(discordPath)
 				const discordConfig = JSON.parse(buffer.toString())
@@ -34,10 +34,10 @@ export async function setService(req: Request, res: Response) {
 				fs.writeFileSync(
 					discordPath,
 					JSON.stringify({
-						clientId: data.clientId ? data.clientId : discordConfig.clientId,
-						clientSecret: data.clientSecret ? data.clientSecret : discordConfig.clientSecret,
-						token: data.token ? data.token : discordConfig.token,
-						prefix: data.prefix ? data.prefix : discordConfig.prefix
+						clientId: data.clientId ? data.clientId : discordConfig.clientId || "",
+						clientSecret: data.clientSecret ? data.clientSecret : discordConfig.clientSecret || "",
+						token: data.token ? data.token : discordConfig.token || "",
+						prefix: data.prefix ? data.prefix : discordConfig.prefix || ""
 					})
 				)
 
@@ -50,20 +50,19 @@ export async function setService(req: Request, res: Response) {
 			case "mastodon":
 				break
 			case "slack":
-				if (!slackBot?.isReady()) return res.status(400).send({ type: "error", error: "Slack bot not ready" })
-				const slackPath = path.join(__dirname, "../config/discord.json")
+				if (slackBot && slackBot.isReady()) return res.status(400).send({ type: "error", error: "Slack bot not ready" })
+				const slackPath = path.join(__dirname, "../config/slack.json")
 				const slackBuffer = fs.readFileSync(slackPath)
 				const slackConfig = JSON.parse(slackBuffer.toString())
 
 				fs.writeFileSync(
 					slackPath,
 					JSON.stringify({
+						signingSecret: data.signingSecret ? data.signingSecret : slackConfig.signingSecret,
 						token: data.token ? data.token : slackConfig.token,
-						secret: data.secret ? data.secret : slackConfig.secret,
 						appToken: data.appToken ? data.appToken : slackConfig.appToken
 					})
 				)
-
 				changeSlackBot()
 
 				return res.status(200).send({

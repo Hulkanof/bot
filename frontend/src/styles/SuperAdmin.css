@@ -1,7 +1,7 @@
 body {
 	width: 100%;
 	display: flex;
-    flex-direction: row;
+	flex-direction: row;
 	background-color: #121212;
 	color: "#ffffff";
 	margin: 0;
@@ -10,40 +10,40 @@ body {
 	z-index: 0;
 }
 
-.main{
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    padding: 2rem;
-    z-index: 1;
+.main {
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	padding: 2rem;
+	z-index: 1;
 }
 
-.manage{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    border: 2px solid;
-    border-color: #ffffff;
-    padding: 2rem;
-    border-radius: 1rem;
+.manage {
+	width: 50rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	border: 2px solid;
+	border-color: #77529e;
+	padding: 2rem;
+	border-radius: 1rem;
 }
 
-.manage-title{
-    font-size: 1.5rem;
+.manage-title {
+	font-size: 1.5rem;
 }
 
-.add{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    border: 2px solid;
-    border-color: #ffffff;
-    padding: 2rem;
-    border-radius: 1rem;
+.add {
+	width: 50rem;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	border: 2px solid;
+	border-color: #77529e;
+	padding: 2rem;
+	border-radius: 1rem;
 }
 
-.add-title{
-    font-size: 1.5rem;
+.add-title {
+	font-size: 1.5rem;
 }

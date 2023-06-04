@@ -14,7 +14,11 @@ export default class SlackClient extends App {
 			signingSecret: secret,
 			socketMode: true,
 			appToken,
-			logLevel: LogLevel.WARN
+			logLevel: LogLevel.ERROR
+		})
+
+		this.error(async error => {
+			console.error("test")
 		})
 
 		this.startApp(port)
@@ -38,6 +42,9 @@ export default class SlackClient extends App {
 						}
 					}, 500)
 				})
+			})
+			.catch(err => {
+				console.log(`[SlackClient] ${err}`)
 			})
 	}
 

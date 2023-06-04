@@ -46,8 +46,12 @@ initDB()
 // Discord Client
 let discordBot: DiscordBot | undefined
 if (discordConfigOK) {
-	const config = discordConfig as DiscordClientConfig
-	discordBot = new DiscordBot(config)
+	try {
+		const config = discordConfig as DiscordClientConfig
+		discordBot = new DiscordBot(config)
+	} catch (err) {
+		console.error("Error creating Discord client:", err)
+	}
 }
 
 // Mastodon Client
@@ -78,8 +82,15 @@ function changeDiscordBot() {
 	discordConfigOK = newDiscordConfig.token && newDiscordConfig.clientId && newDiscordConfig.clientSecret
 	if (discordBot) discordBot.stop()
 	if (discordConfigOK) {
-		const config = newDiscordConfig as DiscordClientConfig
-		discordBot = new DiscordBot(config)
+		try {
+			const config = newDiscordConfig as DiscordClientConfig
+			discordBot = new DiscordBot(config)
+		} catch (err) {
+			console.error("Error creating Discord client:", err)
+		}
+	} else {
+		discordBot = undefined
+		console.warn("Incorrect Discord config!")
 	}
 
 	environment = {
@@ -95,7 +106,14 @@ function changeSlackBot() {
 	slackConfigOK = slackConfig.signingSecret && slackConfig.token
 	if (slackBot) slackBot.stop()
 	if (slackConfigOK) {
-		slackBot = new SlackClient(slackConfig.signingSecret, slackConfig.token, slackConfig.appToken)
+		try {
+			slackBot = new SlackClient(slackConfig.signingSecret, slackConfig.token, slackConfig.appToken)
+		} catch (err) {
+			console.error("Error creating Slack client:", err)
+		}
+	} else {
+		slackBot = undefined
+		console.warn("Incorrect Slack Config!")
 	}
 
 	environment = {
@@ -109,7 +127,7 @@ const expressClient = new ExpressClient(routes, 4000, { start: true })
 createChatBots()
 
 function setBotsReady(ready: boolean) {
-	botsReady = true
+	botsReady = ready
 }
 
 // Graceful Shutdown
@@ -128,5 +146,9 @@ process.on("SIGINT", async () => {
 	if (discordBot) await discordBot.stop()
 	exit(0)
 })
+
+process.on("unhandledRejection", error => {
+	console.log("unhandledRejection", error)
+});
 
 export { discordBot, slackBot, botsReady, expressClient, prisma, environment, changeDiscordBot, changeSlackBot, setBotsReady }

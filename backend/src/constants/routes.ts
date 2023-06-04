@@ -1,4 +1,4 @@
-import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService } from "../api/bots"
+import { getBot, getBots, createBot, deleteBot, getChats, getChatForUser, getChatForUserAndService, updateBotName } from "../api/bots"
 import { createBrain, deleteBrain, getBrain, getBrains, modifyBrain } from "../api/brain"
 import { createUser, loginUser, getUser, getUsers, updateAdmin } from "../api/user"
 import { verifyToken } from "../middlewares/verifyToken"
@@ -73,6 +73,13 @@ export const routes: Route[] = [
 		path: "/api/v1/bots/delete/:id",
 		middlewares: [verifyTokenAdmin],
 		handler: deleteBot
+	},
+	{
+		// Modify a bots name
+		methods: ["patch"],
+		path: "/api/v1/bots/:id/name/:name",
+		middlewares: [verifyTokenAdmin],
+		handler: updateBotName
 	},
 	{
 		// Get the brain of a bot

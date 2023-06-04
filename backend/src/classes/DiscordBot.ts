@@ -126,10 +126,17 @@ export default class DiscordBot extends Client {
 	 * Starts the bot with the current config
 	 */
 	private start() {
-		this.login(this.config.token)
+		this.login(this.config.token).catch(error => {
+			console.error(error)
+		})
+
 		this.on("ready", () => {
 			this.ready = true
 			console.log(`[DiscordClient] Logged in as ${this.user?.tag}`)
+		})
+
+		this.on("error", error => {
+			console.error(error)
 		})
 	}
 

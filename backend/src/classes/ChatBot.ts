@@ -30,7 +30,7 @@ export default class ChatBot {
 	/**
 	 * ExpressClient instance for the web chat client
 	 */
-	private expressClient!: ExpressClient
+	private expressClient?: ExpressClient
 
 	/**
 	 * WebSocketServer instance for the web chat client
@@ -83,7 +83,7 @@ export default class ChatBot {
 		this.setBrain(brain)
 		this.rivescriptBot.unicodePunctuation = new RegExp(/[.,!?;:]/g)
 
-		this.startWebChatClient()
+		if (serviceAccess.socket) this.startWebChatClient()
 
 		ChatBot.chatBots.push(this)
 	}
@@ -144,6 +144,7 @@ export default class ChatBot {
 	}
 
 	private async handleReceivedMessage(data: Data, index: number) {
+		if (!this.expressClient) return console.log("Internal Server Error")
 		const client = this.socketClients[index]
 		if (!client.name) return client.ws.send("Please give your name (/name <name>)")
 		const username = client.name
@@ -159,7 +160,7 @@ export default class ChatBot {
 			if (!ChatBot.conversations[username]) ChatBot.conversations[username] = []
 			ChatBot.conversations[username].push({
 				chatBotName: this.name,
-				service: { name: "webSocketServer", port: this.expressClient.getPort() },
+				service: { name: "webSocketServer", port: this.expressClient?.getPort() || 0 },
 				question: data.toString(),
 				author: username,
 				answer: reply
@@ -210,6 +211,10 @@ export default class ChatBot {
 		return brain
 	}
 
+	public setName(newName: string) {
+		this.name = newName
+	}
+
 	/**
 	 * Gets the id of the chat bot
 	 * @returns The id of the chat bot
@@ -231,14 +236,14 @@ export default class ChatBot {
 	 * @returns The port the server is running on
 	 */
 	public getPort(): number {
-		return this.expressClient.getPort()
+		return this.expressClient?.getPort() || 0
 	}
 
 	/**
 	 * Gets the ExpressClient instance
 	 * @returns The ExpressClient instance
 	 */
-	public getExpressClient(): ExpressClient {
+	public getExpressClient(): ExpressClient | undefined {
 		return this.expressClient
 	}
 
@@ -263,7 +268,7 @@ export default class ChatBot {
 	 */
 	public stop() {
 		this.wss.close(error => (error ? console.error(error) : null))
-		this.expressClient.close()
+		this.expressClient?.close()
 		for (const client of this.wss.clients) client.terminate()
 		console.log(`ChatBot ${this.name} stopped`)
 	}

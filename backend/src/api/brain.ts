@@ -53,17 +53,21 @@ export async function createBrain(req: Request, res: Response) {
 	try {
 		const name = req.params.name
 		const data = req.body.data
-		const brain = await prisma.brains.create({
-			data: {
-				name,
-				data
-			}
-		})
 
-		return res.status(200).send({
-			type: "success",
-			data: brain
-		})
+		console.log(req.body.files)
+
+		// const brain = await prisma.brains.create({
+		// 	data: {
+		// 		name,
+		// 		data
+		// 	}
+		// })
+
+		return res.status(200).send({ type: "success", message: "" })
+		// return res.status(200).send({
+		// 	type: "success",
+		// 	data: brain
+		// })
 	} catch (error: any) {
 		if (error.code === "P2002") return res.status(409).send({ type: "error", error: "Brain already exists" })
 		return res.status(500).send({ type: "error", error: "Internal Server Error" })

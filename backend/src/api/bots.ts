@@ -79,7 +79,8 @@ export async function createBot(req: Request, res: Response) {
 		const serviceAccess = {
 			discord: false,
 			mastodon: false,
-			slack: false
+			slack: false,
+			socket: false
 		}
 
 		const dbBot = await prisma.bots.create({
@@ -112,6 +113,45 @@ export async function createBot(req: Request, res: Response) {
 				socketPort: bot.getPort()
 			}
 		})
+	} catch (error) {
+		return res.status(500).send({ type: "error", error: "Internal Server Error" })
+	}
+}
+
+/**
+ * Route handler to update the name of a bot: /api/v1/bots/update/:id/:name
+ * @param req Request must contain a valid JWT token in the Authorization header with the Bearer scheme
+ * @param res Response body will contain information about the bot
+ */
+export async function updateBotName(req: Request, res: Response) {
+	try {
+		const botId = req.params.id
+		const bot = ChatBot.chatBots.find(bot => bot.getId() === botId)
+		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
+
+		const newName = req.params.name
+
+		if (!newName || newName === "") return res.status(400).send({ type: "error", error: "No new name provided" })
+
+		const dbBot = await prisma.bots.findMany({
+			where: {
+				name: newName
+			}
+		})
+		if (dbBot.length > 0) return res.status(409).send({ type: "error", error: "Bot already exists" })
+
+		await prisma.bots.update({
+			where: {
+				id: botId
+			},
+			data: {
+				name: newName
+			}
+		})
+
+		bot.setName(newName)
+
+		return res.status(200).send({ type: "success", message: "Bot name updated" })
 	} catch (error) {
 		return res.status(500).send({ type: "error", error: "Internal Server Error" })
 	}
@@ -228,12 +268,13 @@ export async function setBotServices(req: Request, res: Response) {
 		if (!bot) return res.status(404).send({ type: "error", error: "Bot not found" })
 
 		const services = req.body?.services as Partial<ServiceAccess>
-		if (!services) return res.status(400).send({ type: "error", error: "Body was not correctly" })
+		if (!services) return res.status(400).send({ type: "error", error: "Body was not set correctly" })
 
 		const serviceAccess = {
-			discord: services.discord ? services.discord : bot.serviceAccess.discord,
-			mastodon: services.mastodon ? services.mastodon : bot.serviceAccess.mastodon,
-			slack: services.slack ? services.slack : bot.serviceAccess.slack
+			discord: services.discord !== undefined ? services.discord : bot.serviceAccess.discord,
+			mastodon: services.mastodon !== undefined ? services.mastodon : bot.serviceAccess.mastodon,
+			slack: services.slack !== undefined ? services.slack : bot.serviceAccess.slack,
+			socket: services.socket !== undefined ? services.socket : bot.serviceAccess.socket
 		}
 
 		const dbServiceAccess = await prisma.bots.update({

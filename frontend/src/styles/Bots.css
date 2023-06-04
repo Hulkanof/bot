@@ -1,0 +1,96 @@
+body {
+	width: 100%;
+	display: grid;
+	background-color: #121212;
+	color: "#ffffff";
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	z-index: 0;
+}
+
+.main-bot {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 2rem;
+	padding: 2rem;
+	z-index: 1;
+}
+
+.search {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
+}
+
+.search:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+
+.bots {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 3rem;
+	padding: 2rem;
+	overflow: wrap;
+}
+
+.bot-card {
+	width: 15rem;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	border: 2px solid;
+	border-color: #77529e;
+	border-radius: 0.5rem;
+	padding: 1rem;
+}
+
+.buttons {
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	align-items: center;
+	justify-content: center;
+}
+
+.bot-talk {
+	width: 2.5rem;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	background-color: #77529e;
+	align-content: center;
+	border-radius: 1rem;
+}
+
+.bot-talk:hover {
+	background-color: #bb86fc;
+	cursor: pointer;
+}
+
+.bot-update {
+	width: 2.5rem;
+	display: flex;
+	flex-direction: row;
+	gap: 2rem;
+	background-color: #77529e;
+	align-content: center;
+	border-radius: 1rem;
+}
+
+.bot-update:hover {
+	background-color: #bb86fc;
+	cursor: pointer;
+}
