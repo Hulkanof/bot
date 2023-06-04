@@ -41,7 +41,6 @@ export default class ExpressClient {
 		this.app = express()
 		this.app.use(express.json())
 		this.app.use(cookieParser())
-		this.app.use(express.urlencoded())
 
 		// Add routes from routes array
 		routes.forEach(route => {

@@ -13,7 +13,6 @@ export default async function createBrain(token: string, brain: { file: File; na
 		method: "POST",
 		headers: {
 			Authorization: `Bearer ${token}`,
-			"Content-Type": "multipart/form-data"
 		},
 		body: formData
 	})

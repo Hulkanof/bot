@@ -7,6 +7,7 @@ import { verifyTokenAdmin } from "../middlewares/verifyTokenAdmin"
 import { getBotbrain, setBotBrain } from "../api/bots"
 import { getBotServices, setBotServices } from "../api/bots"
 import { getServices, setService } from "../api/services"
+import multer from "multer"
 
 /**
  * Express routes
@@ -149,7 +150,7 @@ export const routes: Route[] = [
 		// Add a new brain
 		methods: ["post"],
 		path: "/api/v1/brains/create/:name",
-		middlewares: [verifyTokenAdmin],
+		middlewares: [multer().single("files"), verifyTokenAdmin],
 		handler: createBrain
 	},
 	{

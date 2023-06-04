@@ -15,7 +15,7 @@ const Admin: React.FC<defaultPageProps> = props => {
 	const [slackToken, setSlackToken] = useState("")
 	const [slackSigningSecret, setSlackSigningSecret] = useState("")
 	const [slackAppToken, setSlackAppToken] = useState("")
-	const newBrainFileRef = React.createRef<HTMLInputElement>()
+	const [newBrainFiles, setNewBrainFiles] = useState<FileList | null>(null)
 
 	if (error) return <div>Error: {error.message}</div>
 	if (isLoading) return <div>Loading...</div>
@@ -35,9 +35,9 @@ const Admin: React.FC<defaultPageProps> = props => {
 		createBot(token, name).catch(err => console.log(err))
 	}
 
-	function handleAddBrain(files: FileList | null) {
-		if (files) {
-			const file = files[0]
+	function handleAddBrain() {
+		if (newBrainFiles) {
+			const file = newBrainFiles[0]
 			if (!file) return
 
 			createBrain(token, {
@@ -99,8 +99,8 @@ const Admin: React.FC<defaultPageProps> = props => {
 					<div className="brain">
 						<h2>Here you can add a brain</h2>
 						<input className="brain-input" type="text" placeholder="Name" onChange={e => setName(e.target.value)} />
-						<input className="brain-input" type="file" placeholder="Content" onChange={e => handleAddBrain(e.target.files)} />
-						<button className="brain-add" onClick={() => console.log("")}>
+						<input className="brain-input" type="file" placeholder="Content" onChange={e => setNewBrainFiles(e.target.files)} />
+						<button className="brain-add" onClick={() => handleAddBrain()}>
 							Add
 						</button>
 					</div>

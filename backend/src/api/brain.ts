@@ -52,22 +52,23 @@ export async function getBrain(req: Request, res: Response) {
 export async function createBrain(req: Request, res: Response) {
 	try {
 		const name = req.params.name
-		const data = req.body.data
+		const file = req.file
 
-		console.log(req.body.files)
+		if (!file || !name) return res.status(400).send({ type: "error", error: "Missing Body" })
 
-		// const brain = await prisma.brains.create({
-		// 	data: {
-		// 		name,
-		// 		data
-		// 	}
-		// })
+		const content = file.buffer.toString("utf-8")
 
-		return res.status(200).send({ type: "success", message: "" })
-		// return res.status(200).send({
-		// 	type: "success",
-		// 	data: brain
-		// })
+		const brain = await prisma.brains.create({
+			data: {
+				name,
+				data: content
+			}
+		})
+
+		return res.status(200).send({
+			type: "success",
+			data: brain
+		})
 	} catch (error: any) {
 		if (error.code === "P2002") return res.status(409).send({ type: "error", error: "Brain already exists" })
 		return res.status(500).send({ type: "error", error: "Internal Server Error" })
