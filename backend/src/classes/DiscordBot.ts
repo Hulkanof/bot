@@ -129,7 +129,7 @@ export default class DiscordBot extends Client {
 		this.login(this.config.token)
 		this.on("ready", () => {
 			this.ready = true
-			console.log(`Logged in as ${this.user?.tag}`)
+			console.log(`[DiscordClient] Logged in as ${this.user?.tag}`)
 		})
 	}
 
