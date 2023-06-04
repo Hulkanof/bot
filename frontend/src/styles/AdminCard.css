@@ -51,8 +51,18 @@ body {
 	cursor: pointer;
 }
 
-.search{
-	gap: 2rem;
-	font-display: flex;
-	color: black;
+.search {
+	font-size: large;
+	width: 20rem;
+	height: 2rem;
+	border: none;
+	border-bottom: 1px solid #2d2d2d;
+	background-color: #121212;
+	color: #ffffff;
 }
+
+.search:focus {
+	outline: none;
+	border-bottom-color: #bb86fc;
+}
+

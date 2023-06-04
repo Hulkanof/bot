@@ -66,19 +66,22 @@ function App() {
 			id: "1",
 			label: "SuperAdmin panel",
 			icon : FcSupport,
-			url : "/superadmin"
+			url : "/superadmin",
+			privilegeNeeded : "2"
 		},
 		{
 			id: "2",
 			label: "Admin panel",
 			icon : FcManager,
-			url : "/admin"
+			url : "/admin",
+			privilegeNeeded : "1"
 		},
 		{
 			id: "3",
 			label: "Bot panel",
 			icon : FcVoicePresentation,
-			url : "/web-client"
+			url : "/web-client",
+			privilegeNeeded : "0"
 		}
 	];
 

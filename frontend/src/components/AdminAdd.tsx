@@ -28,7 +28,6 @@ const AdminAdd : React.FC<defaultPageProps> = ({token}) => {
         <div className="user-card">
             <div className="user-card-title"></div>
             <div className="user-card-search">
-                Search : 
                 <input type="text" placeholder="Search..." onChange={(e) => setSearch(e.target.value)} className="search"/>
             </div>
             <div className="user-card-users">

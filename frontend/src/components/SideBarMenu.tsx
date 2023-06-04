@@ -10,10 +10,8 @@ interface SideBarMenuProps {
     items: SideBarMenuItem[];
 }
 
-
-
 export function SideBarMenu({ items }: SideBarMenuProps){ 
-    const [isOpen, setIsOpen] = useState<boolean>(true);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     function handleClick() {
         setIsOpen(!isOpen);
