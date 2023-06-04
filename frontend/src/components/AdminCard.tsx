@@ -38,9 +38,9 @@ const AdminCard: React.FC<defaultPageProps> = ({token}) => {
                         <div className="admin-card-user-name">{user.name}</div>
                         <div className="admin-card-user-email">{user.email}</div>
                         {user.admin === 1 ? (
-                            <div className="admin-card-user-remove" onClick={() => handleRemove(user.id)}>Remove</div>
+                            <button className="admin-card-user-remove" onClick={() => handleRemove(user.id)}>Remove</button>
                         ) : (
-                            <div className="admin-card-user-remove" ></div>
+                            <div></div>
                         )}
                     </div>
                 ))}

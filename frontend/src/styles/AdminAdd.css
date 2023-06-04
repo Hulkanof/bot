@@ -10,7 +10,7 @@ body {
 }
 
 
-.admin-card{
+.user-card{
     width: 100%;
     height: 100%;
     display: flex;
@@ -20,14 +20,14 @@ body {
     gap: 2rem;
 }
 
-.admin-card-search{
+.user-card-search{
 	width: 100%;
 	display: flex;
 	flex-direction: row;
 	gap: 2rem;
 }
 
-.admin-card-user{
+.user-card-user{
 	width: 100%;
 	display: flex;
 	flex-direction: row;
@@ -35,8 +35,8 @@ body {
 	align-items: center;
 }
 
-.admin-card-user-remove{
-	width: 4rem;
+.user-card-user-add{
+	width: 2.5rem;
 	display: flex;
 	flex-direction: row;
 	gap: 2rem;
@@ -46,7 +46,7 @@ body {
 
 }
 
-.admin-card-user-remove:hover {
+.user-card-user-add:hover {
 	background-color: #bb86fc;
 	cursor: pointer;
 }
